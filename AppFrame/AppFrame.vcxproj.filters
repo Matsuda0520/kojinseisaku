@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Application">
+      <UniqueIdentifier>{4ca63305-d083-453b-88a9-706f0a1ac180}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CFile">
+      <UniqueIdentifier>{8fbd5843-f112-4047-a7f8-83460621436b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{315e5881-e040-4bd7-a4b7-93675c98551d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="draw">
+      <UniqueIdentifier>{820f4ae8-9bbb-4a32-8afa-c2f0dcf235b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="primitive">
+      <UniqueIdentifier>{32310d3c-9556-4391-8000-49a85d2b7a9c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DxUtil">
+      <UniqueIdentifier>{2e591e29-8d53-4b93-a112-b5af944bd0bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="mode">
+      <UniqueIdentifier>{f65d1d8e-b785-4c0b-a849-085fd92b4b60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{610f7d9d-f20a-4b06-9e66-a8fce1b04205}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="input">
+      <UniqueIdentifier>{e41ba0f4-6385-4179-892e-ba2a13e06816}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="source\Application\ApplicationBase.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Application\WinMain.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Mode\ModeBase.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Mode\ModeServer.cpp">
+      <Filter>mode</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CFile\CFile.cpp">
+      <Filter>CFile</Filter>
+    </ClCompile>
+    <ClCompile Include="source\math\Vector2.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="source\math\Vector4.cpp">
+      <Filter>math</Filter>
+    </ClCompile>
+    <ClCompile Include="source\DxUtil\DxUtility.cpp">
+      <Filter>DxUtil</Filter>
+    </ClCompile>
+    <ClCompile Include="source\primitive\PrimitiveBase.cpp">
+      <Filter>primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="source\primitive\PrimitivePlane.cpp">
+      <Filter>primitive</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Resource\ResourceServer.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="source\input\InputManager.cpp">
+      <Filter>input</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="source\Application\ApplicationBase.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Application\UtilMacro.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="source\appframe.h" />
+    <ClInclude Include="source\Mode\ModeBase.h">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Mode\ModeServer.h">
+      <Filter>mode</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CFile\CFile.h">
+      <Filter>CFile</Filter>
+    </ClInclude>
+    <ClInclude Include="source\math\Vector2.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\math\Vector4.h">
+      <Filter>math</Filter>
+    </ClInclude>
+    <ClInclude Include="source\draw\mydraw.h">
+      <Filter>draw</Filter>
+    </ClInclude>
+    <ClInclude Include="source\DxUtil\DxUtility.h">
+      <Filter>DxUtil</Filter>
+    </ClInclude>
+    <ClInclude Include="source\primitive\PrimitiveBase.h">
+      <Filter>primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="source\primitive\PrimitivePlane.h">
+      <Filter>primitive</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Resource\ResourceServer.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="source\input\InputManager.h">
+      <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="source\math\mymath.h">
+      <Filter>math</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
