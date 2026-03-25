@@ -11,7 +11,7 @@ public:
 	void Process() override;
 
 	// プレイヤーを登録
-	void SetTarget(GameObject* target) { _target = target; }
+	void SetTarget(GameObject* target);
 
 	// パラメータ調整
 	void SetOffset(float distance, float height, float lookAtHeight);
@@ -23,5 +23,9 @@ private:
 	float _distance;// プレイヤーからの距離
 	float _height;// プレイヤーからの高さ
 	float _lookAtHeight;// プレイヤーのどこを見るか
+
+	// 追従Y固定(ジャンプ時の画面揺れを防止)
+	float _fixedTargetY;
+	bool _isFixedTargetYInit;
 };
 

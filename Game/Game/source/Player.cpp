@@ -2,9 +2,23 @@
 #include "PlayerState.h"
 #include "ActionMap.h"
 
+namespace
+{
+	// デフォルトのカプセルサイズ
+	constexpr float DEFAULT_CAP_RAD = 20.0f;// 半径
+	constexpr float DEFAULT_CAP_HH = 45.0f;// 半分の高さ
+
+	// ローリング中のカプセルサイズ
+	constexpr float ROLL_CAP_RAD = 20.0f;
+	constexpr float ROLL_CAP_HH = 25.0f;
+}
+
 Player::Player(const char* name)
 	: CharacterBase(name)
+	, _capsuleRadius(DEFAULT_CAP_RAD)
+	, _capsuleHalfHeight(DEFAULT_CAP_HH)
 {
+	_hp = 100.0f;
 	_speed = 5.0f;
 
 	// 初期状態は待機状態
@@ -25,11 +39,14 @@ void Player::Initialize()
 	auto collider = std::make_unique<CapsuleCollider>(
 		"PlayerCollider", 
 		CollisionLayer::Player, 
-		20.0f, 45.0f,// 半径、高さ
+		_capsuleRadius,// 半径
 		this
 	);
 	_collider = collider.get();// アクセス用にポインタを保持
 	AddChild(std::move(collider));// 所有権は親へ渡す
+
+	// 初期カプセル形状の適用
+	ApplyCapsule(_capsuleRadius, _capsuleHalfHeight);
 
 	// 初期ステートの開始処理
 	if (_currentState)
@@ -44,6 +61,9 @@ void Player::Process()
 
 	// CharacterBase::Process()でMove()が呼ばれる
 	CharacterBase::Process();
+
+	// 座標更新後にカプセルの線分を更新する
+	UpdateCapsuleSegment();
 
 	// アニメーションの更新
 	_animManager.Update();
@@ -150,4 +170,41 @@ void Player::OnCollision(GameObject* other)
 	if (!attacker) { return; }
 
 	TakeDamage(attacker->GetAttackPower());
+}
+
+// ローリング中のカプセル設定
+void Player::SetRollingCollider()
+{
+	ApplyCapsule(ROLL_CAP_RAD, ROLL_CAP_HH);
+}
+
+// デフォルトのカプセル設定に戻す
+void Player::ResetCollider()
+{
+	ApplyCapsule(DEFAULT_CAP_RAD, DEFAULT_CAP_HH);
+}
+
+void Player::ApplyCapsule(float radius, float halfHeight)
+{
+	_capsuleRadius = radius;
+	_capsuleHalfHeight = halfHeight;
+
+	if (!_collider) { return; }
+	// 半径をコライダーに適用
+	_collider->SetCapsuleRadius(_capsuleRadius);
+	// 線分を更新
+	UpdateCapsuleSegment();
+}
+
+void Player::UpdateCapsuleSegment()
+{
+	if (!_collider) { return; }
+
+	// プレイヤー位置を中心に、Y軸方向に半分の高さだけずらした線分を作成
+	Vector4 pos = GetPosition();
+	Vector4 start = pos + Vector4(0.0f, _capsuleHalfHeight, 0.0f);
+	Vector4 end = pos + Vector4(0.0f, -_capsuleHalfHeight, 0.0f);
+
+	// 線分をコライダーに適用
+	_collider->SetCapsuleSegment(start, end);
 }

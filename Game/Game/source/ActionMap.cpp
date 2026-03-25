@@ -32,6 +32,12 @@ void ActionMap::InitializeDefaultBindings()
 		.AddKey(KEY_INPUT_SPACE)
 		.AddPad(PAD_INPUT_1)
 	);
+
+	// ÉçÅ[ÉäÉìÉO
+	Bind(InputAction::Roll, ActionBinding()
+		.AddKey(KEY_INPUT_LSHIFT)
+		.AddPad(PAD_INPUT_2)
+	);
 }
 
 bool ActionMap::IsHold(InputAction action)

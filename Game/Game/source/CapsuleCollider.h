@@ -7,7 +7,7 @@ class CollisionManager;
 class CapsuleCollider : public GameLeaf, public ICollider, public ICapsuleCollider
 {
 public:
-	CapsuleCollider(const char* name, CollisionLayer layer, float radius, float halfHeight, GameObject* owner);
+	CapsuleCollider(const char* name, CollisionLayer layer, float radius, GameObject* owner);
 	virtual ~CapsuleCollider();
 
 	void Initialize() override;
@@ -27,16 +27,21 @@ public:
 	// 衝突時はオーナーのOnCollisionを呼び出す
 	void OnCollision(GameObject* other) override;
 
-	// オーナーの座標に追従する
-	Vector4 GetCapsuleStart() const override;
-	Vector4 GetCapsuleEnd() const override;
+	// カプセル情報(線分 + 半径)で定義
+	Vector4 GetCapsuleStart() const override { return _segmentStart; }
+	Vector4 GetCapsuleEnd() const override { return _segmentEnd; }
 	float GetCapsuleRadius() const override { return _radius; }
+
+	void SetCapsuleRadius(float radius) { _radius = radius; }
+	void SetCapsuleSegment(const Vector4& start, const Vector4& end);
 
 private:
 	CollisionLayer _layer;
 	float _radius;
-	float _halfHeight;
 	GameObject* _owner;
+
+	Vector4 _segmentStart;// 線分の始点
+	Vector4 _segmentEnd;// 線分の終点
 
 };
 

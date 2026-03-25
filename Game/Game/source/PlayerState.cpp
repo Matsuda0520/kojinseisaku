@@ -20,6 +20,13 @@ void PlayerStateIdle::Update(Player* player)
 		return;
 	}
 
+	// ローリング入力のチェック
+	if (actionMap.IsTrigger(InputAction::Roll))
+	{
+		player->ChangeState(std::make_unique<PlayerStateRoll>());
+		return;
+	}
+
 	// 横移動入力のチェック
 	Vector4 inputVel = player->GetInputVelocity();
 	if (std::abs(inputVel.GetX()) > 0.0f)
@@ -48,6 +55,13 @@ void PlayerStateMove::Update(Player* player)
 	if(actionMap.IsTrigger(InputAction::Jump))
 	{
 		player->ChangeState(std::make_unique<PlayerStateJump>());
+		return;
+	}
+
+	// ローリング入力のチェック
+	if (actionMap.IsTrigger(InputAction::Roll))
+	{
+		player->ChangeState(std::make_unique<PlayerStateRoll>());
 		return;
 	}
 
@@ -84,7 +98,7 @@ void PlayerStateMove::Update(Player* player)
 void PlayerStateJump::Enter(Player* player)
 {
 	// ジャンプ開始時に上方向の初速を設定
-	_verticalVelocity = 10.0f;
+	_verticalVelocity = 20.0f;
 
 	player->PlayAnimation("mainRig|JumpUp", 10.0f, 1, 0.5f);
 }
@@ -95,7 +109,7 @@ void PlayerStateJump::Update(Player* player)
 	Vector4 inputVel = player->GetInputVelocity();
 
 	// 重力を加算
-	_verticalVelocity -= 0.1f;
+	_verticalVelocity -= 0.98f;
 
 	// 座標の更新
 	// X : 空中制御、Y : ジャンプと落下、Z : 常に前進
@@ -117,4 +131,35 @@ void PlayerStateJump::Exit(Player* player)
 {
 	// ジャンプ終了時の処理
 	player->PlayAnimation("mainRig|JumpDown", 10.0f, 1, 0.5f);
+}
+
+// ローリング状態
+void PlayerStateRoll::Enter(Player* player)
+{
+	// ローリング開始時の処理
+	_timer = 0.0f;
+	player->SetRollingCollider();// コライダーをローリング用に変更
+	player->PlayAnimation("mainRig|Rolling", 10.0f, 1, 0.5f);
+}
+
+void PlayerStateRoll::Update(Player* player)
+{
+	_timer += 1.0f;
+	if (_timer >= 70.0f)// アニメーション時間
+	{
+		// ローリング終了
+		player->ChangeState(std::make_unique<PlayerStateIdle>());
+		return;
+	}
+
+	// 常に前進
+	Vector4 pos = player->GetPosition();
+	pos = pos + Vector4(0.0f, 0.0f, player->GetSpeed());
+	player->SetPosition(pos);
+}
+
+void PlayerStateRoll::Exit(Player* player)
+{
+	// ローリング終了時の処理
+	player->ResetCollider();// コライダーを元に戻す
 }

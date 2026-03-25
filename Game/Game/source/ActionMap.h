@@ -12,6 +12,7 @@ enum class InputAction
 	MoveLeft,// 左移動
 	MoveRight,// 右移動
 	Jump,// ジャンプ
+	Roll,// ローリング
 	_EOT_
 };
 

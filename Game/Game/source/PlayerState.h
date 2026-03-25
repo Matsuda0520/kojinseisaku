@@ -46,3 +46,15 @@ private:
 	float _verticalVelocity = 0.0f;// 縦方向の速度
 };
 
+// ローリング状態
+class PlayerStateRoll : public PlayerState
+{
+public:
+	void Enter(Player* player) override;
+	void Update(Player* player) override;
+	void Exit(Player* player) override;
+
+private:
+	float _timer = 0.0f;// ローリングタイマー
+};
+

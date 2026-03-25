@@ -22,11 +22,18 @@ void Laser::Initialize()
 	auto collider = std::make_unique<CapsuleCollider>(
 		"LaserCollider",
 		CollisionLayer::Enemy,
-		_capsuleRadius, 200.0f,// 半径、高さ
+		_capsuleRadius,// 半径
 		this
 	);
 	_collider = collider.get();// アクセス用にポインタを保持
 	AddChild(std::move(collider));// 所有権は親へ渡す
+
+	// カプセルの初期設定
+	if (_collider)
+	{
+		_collider->SetCapsuleRadius(_capsuleRadius);
+		_collider->SetCapsuleSegment(_capsuleStart, _capsuleEnd);
+	}
 }
 
 void Laser::Process()
@@ -60,6 +67,13 @@ void Laser::SetCapsule(const Vector4& start, const Vector4& end, float radius)
 		(start.GetY() + end.GetY()) * 0.5f,
 		(start.GetZ() + end.GetZ()) * 0.5f
 	);
+
+	// コライダー情報も更新する
+	if (_collider)
+	{
+		_collider->SetCapsuleRadius(_capsuleRadius);
+		_collider->SetCapsuleSegment(_capsuleStart, _capsuleEnd);
+	}
 }
 
 void Laser::Sleep()

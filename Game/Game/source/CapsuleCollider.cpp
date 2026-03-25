@@ -1,12 +1,13 @@
 #include "CapsuleCollider.h"
 #include "CollisionManager.h"
 
-CapsuleCollider::CapsuleCollider(const char* name, CollisionLayer layer, float radius, float halfHeight, GameObject* owner)
+CapsuleCollider::CapsuleCollider(const char* name, CollisionLayer layer, float radius, GameObject* owner)
 	: GameLeaf(name)
 	, _layer(layer)
 	, _radius(radius)
-	, _halfHeight(halfHeight)
 	, _owner(owner)
+	, _segmentStart()
+	, _segmentEnd()
 {
 }
 
@@ -18,6 +19,13 @@ CapsuleCollider::~CapsuleCollider()
 
 void CapsuleCollider::Initialize()
 {
+	// オーナー位置を設定しておく
+	if (_owner)
+	{
+		_segmentStart = _owner->GetPosition();
+		_segmentEnd = _owner->GetPosition();
+	}
+
 	// CollisionManagerに登録する
 	CollisionManager::GetInstance().Register(this);
 }
@@ -31,12 +39,9 @@ void CapsuleCollider::OnCollision(GameObject* other)
 	}
 }
 
-Vector4 CapsuleCollider::GetCapsuleStart() const
+void CapsuleCollider::SetCapsuleSegment(const Vector4& start, const Vector4& end)
 {
-	return _owner->GetPosition() + Vector4(0.0f, _halfHeight, 0.0f);
-}
-
-Vector4 CapsuleCollider::GetCapsuleEnd() const
-{
-	return _owner->GetPosition() + Vector4(0.0f, -_halfHeight, 0.0f);
+	// カプセル軸を更新
+	_segmentStart = start;
+	_segmentEnd = end;
 }

@@ -30,6 +30,10 @@ public:
 	// アニメーション再生要求
 	bool PlayAnimation(const char* animName, float blendFrame, int loopCnt, float playSpeed = 1.0f);
 
+	// ローリング中のカプセル設定
+	void SetRollingCollider();
+	void ResetCollider();
+
 	// Observer管理
 	//void AddObserver(IPlayerObserver* observer);
 	//void RemoveObserver(IPlayerObserver* observer);
@@ -46,9 +50,17 @@ protected:
 	//void NotifyDeath();
 
 private:
+	// カプセルのパラメータを適用して、コライダーの線分を更新する
+	void ApplyCapsule(float radius, float halfHeight);
+	// プレイヤーの位置からカプセルの線分を更新する
+	void UpdateCapsuleSegment();
+
 	std::vector<IPlayerObserver*> _observers;
 	std::unique_ptr<PlayerState> _currentState;// 現在の状態
 	AnimManager _animManager;
 	CapsuleCollider* _collider;// コライダーの参照
+
+	float _capsuleRadius;// カプセルの半径
+	float _capsuleHalfHeight;// カプセルの半分の高さ
 };
 
