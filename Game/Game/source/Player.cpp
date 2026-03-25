@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "PlayerState.h"
 #include "ActionMap.h"
+#include "IPlayerObserver.h"
 
 namespace
 {
@@ -94,17 +95,17 @@ void Player::TakeDamage(float damage)
 	float prevHp = _hp;
 	CharacterBase::TakeDamage(damage);
 
-	//// ダメージ通知
-	//if(_hp < prevHp)
-	//{
-	//	NotifyDamage();
-	//}
+	// ダメージ通知
+	if(_hp < prevHp)
+	{
+		NotifyDamage();
+	}
 
-	//// 死亡通知
-	//if (_hp <= 0.0f)
-	//{
-	//	NotifyDeath();
-	//}
+	// 死亡通知
+	if (prevHp > 0.0f &&_hp <= 0.0f)
+	{
+		NotifyDeath();
+	}
 }
 
 void Player::ChangeState(std::unique_ptr<PlayerState> newState)
@@ -182,6 +183,50 @@ void Player::SetRollingCollider()
 void Player::ResetCollider()
 {
 	ApplyCapsule(DEFAULT_CAP_RAD, DEFAULT_CAP_HH);
+}
+
+void Player::AddObserver(IPlayerObserver* observer)
+{
+	if (!observer) { return; }
+
+	auto it = std::find(_observers.begin(), _observers.end(), observer);
+	if (it == _observers.end())
+	{
+		_observers.push_back(observer);
+	}
+}
+
+void Player::RemoveObserver(IPlayerObserver* observer)
+{
+	if (!observer) { return; }
+
+	_observers.erase(
+		std::remove(
+			_observers.begin(), _observers.end(), observer), 
+		_observers.end()
+	);
+}
+
+void Player::NotifyDamage()
+{
+	for (auto observer : _observers)
+	{
+		if (observer)
+		{
+			observer->OnPlayerDamaged(this);
+		}
+	}
+}
+
+void Player::NotifyDeath()
+{
+	for (auto observer : _observers)
+	{
+		if (observer)
+		{
+			observer->OnPlayerDied(this);
+		}
+	}
 }
 
 void Player::ApplyCapsule(float radius, float halfHeight)

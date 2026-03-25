@@ -32,7 +32,7 @@ public:
 	// 親を辿ってグローバル座標を計算する
 	Vector2 GetGlobalPos() const;
 
-	bool IsDead() { return _isDead; } const
+	bool IsDead() const { return _isDead; }
 
 	void SetParent(UIElement* parent) { _parent = parent; }
 

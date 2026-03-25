@@ -35,8 +35,8 @@ public:
 	void ResetCollider();
 
 	// Observer管理
-	//void AddObserver(IPlayerObserver* observer);
-	//void RemoveObserver(IPlayerObserver* observer);
+	void AddObserver(IPlayerObserver* observer);
+	void RemoveObserver(IPlayerObserver* observer);
 
 	// 自分が保持しているコライダーを返す
 	ICollider* AsCollider() override { return _collider; }
@@ -45,11 +45,11 @@ public:
 	// 衝突イベント
 	void OnCollision(GameObject* other) override;
 
-protected:
-	//void NotifyDamage();
-	//void NotifyDeath();
-
 private:
+	// Observerへの通知
+	void NotifyDamage();
+	void NotifyDeath();
+
 	// カプセルのパラメータを適用して、コライダーの線分を更新する
 	void ApplyCapsule(float radius, float halfHeight);
 	// プレイヤーの位置からカプセルの線分を更新する
