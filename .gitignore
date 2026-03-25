@@ -418,3 +418,8 @@ FodyWeavers.xsd
 *.msp
 DxLib
 Game/Game/Log.txt
+copilot-instructions.md
+create_dir.bat
+create_github_dir.ps1
+move_file.js
+move_file.py
