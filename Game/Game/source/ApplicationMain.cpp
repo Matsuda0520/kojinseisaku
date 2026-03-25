@@ -18,6 +18,8 @@ bool ApplicationMain::Initialize(HINSTANCE hInstance)
 
 bool ApplicationMain::Terminate()
 {
+	ModeServer::GetInstance().Clear();
+
 	// ÅŒã‚ÉŠî’êƒNƒ‰ƒX‚ÌI—¹ˆ—
 	base::Terminate();
 

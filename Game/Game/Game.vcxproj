@@ -174,8 +174,10 @@
     <ClCompile Include="source\Laser.cpp" />
     <ClCompile Include="source\LightManager.cpp" />
     <ClCompile Include="source\ModeGame.cpp" />
+    <ClCompile Include="source\MovingLaser.cpp" />
     <ClCompile Include="source\Player.cpp" />
     <ClCompile Include="source\PlayerState.cpp" />
+    <ClCompile Include="source\RotatingLaser.cpp" />
     <ClCompile Include="source\Spawner.cpp" />
     <ClCompile Include="source\StageSpawner.cpp" />
     <ClCompile Include="source\TPSCamera.cpp" />
@@ -204,8 +206,11 @@
     <ClInclude Include="source\Laser.h" />
     <ClInclude Include="source\LightManager.h" />
     <ClInclude Include="source\ModeGame.h" />
+    <ClInclude Include="source\MovingLaser.h" />
+    <ClInclude Include="source\NormalLaser.h" />
     <ClInclude Include="source\Player.h" />
     <ClInclude Include="source\PlayerState.h" />
+    <ClInclude Include="source\RotatingLaser.h" />
     <ClInclude Include="source\Spawner.h" />
     <ClInclude Include="source\StageSpawner.h" />
     <ClInclude Include="source\TPSCamera.h" />

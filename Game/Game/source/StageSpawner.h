@@ -3,6 +3,7 @@
 
 class GameObject;
 class Floor;
+class Laser;
 
 // ステージ全体を管理するクラス。ステージのルートノードとして機能する
 class StageSpawner : public GameComposite
@@ -20,9 +21,17 @@ public:
 	void BuildInitialStage();
 
 private:
+	// プールから非アクティブなレーザーを取得する
+	Laser* GetInactiveLaserFromPool();
+
 	GameObject* _target;// プレイヤーへの参照
 
-	std::deque<Floor*> _activeFloors;// オブジェクトプール用のリスト
+	std::deque<Floor*> _activeFloors;// 床のプール
+	std::vector<Laser*> _laserPool;// レーザーのプール
+
+	float _laserSpawnTimer;// レーザーの再配置タイマー
+	std::vector<float> _laserHeightPresets;// レーザーの高さプリセット
+
 	float _nextSpawnZ;
 };
 

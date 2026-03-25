@@ -81,6 +81,15 @@ bool ModeGame::Initialize()
 
 bool ModeGame::Terminate()
 {
+	if (_sceneRoot)
+	{
+		_sceneRoot->Terminate();
+		_sceneRoot.reset();
+	}
+
+	_playerSpawner.reset();
+	CollisionManager::GetInstance().Terminate();
+
 	return true;
 }
 
