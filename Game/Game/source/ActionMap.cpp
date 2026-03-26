@@ -38,6 +38,12 @@ void ActionMap::InitializeDefaultBindings()
 		.AddKey(KEY_INPUT_LSHIFT)
 		.AddPad(PAD_INPUT_2)
 	);
+
+	// スタート(タイトル)
+	Bind(InputAction::Start, ActionBinding()
+		.AddKey(KEY_INPUT_RETURN)
+		.AddPad(PAD_INPUT_9)
+	);
 }
 
 bool ActionMap::IsHold(InputAction action)

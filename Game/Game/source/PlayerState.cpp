@@ -2,6 +2,21 @@
 #include "Player.h"
 #include "ActionMap.h"
 
+namespace
+{
+	void ClampPlayerX(Vector4& pos)
+	{
+		if (pos.GetX() < -400.0f)
+		{
+			pos.SetX(-400.0f);
+		}
+		else if(pos.GetX() > 400.0f)
+		{
+			pos.SetX(400.0f);
+		}
+	}
+}
+
 // 待機状態
 void PlayerStateIdle::Enter(Player* player)
 {
@@ -77,6 +92,7 @@ void PlayerStateMove::Update(Player* player)
 	Vector4 pos = player->GetPosition();
 	// X方向には入力値 * スピード、Z方向には常にスピードを加算
 	pos = pos + Vector4(inputVel.GetX() * player->GetSpeed(), 0.0f, player->GetSpeed());
+	ClampPlayerX(pos);
 	player->SetPosition(pos);
 
 	//// 移動ベクトルの正規化
@@ -98,7 +114,7 @@ void PlayerStateMove::Update(Player* player)
 void PlayerStateJump::Enter(Player* player)
 {
 	// ジャンプ開始時に上方向の初速を設定
-	_verticalVelocity = 20.0f;
+	_verticalVelocity = 18.0f * player->GetSpeedMultiplier();
 
 	player->PlayAnimation("mainRig|JumpUp", 10.0f, 1, 0.5f);
 }
@@ -109,11 +125,13 @@ void PlayerStateJump::Update(Player* player)
 	Vector4 inputVel = player->GetInputVelocity();
 
 	// 重力を加算
-	_verticalVelocity -= 0.98f;
+	float multiplier = player->GetSpeedMultiplier();
+	_verticalVelocity -= 0.98f * (multiplier * multiplier);
 
 	// 座標の更新
 	// X : 空中制御、Y : ジャンプと落下、Z : 常に前進
 	pos = pos + Vector4(inputVel.GetX() * player->GetSpeed(), _verticalVelocity, player->GetSpeed());
+	ClampPlayerX(pos);
 
 	// 着地判定(0.0f以下になったら地面とみなす)
 	if (pos.GetY() <= 0.0f)
@@ -144,8 +162,9 @@ void PlayerStateRoll::Enter(Player* player)
 
 void PlayerStateRoll::Update(Player* player)
 {
-	_timer += 1.0f;
-	if (_timer >= 70.0f)// アニメーション時間
+	_timer += 1.0f * player->GetSpeedMultiplier();
+
+	if (_timer >= 70.0f)// アニメーションの基本時間
 	{
 		// ローリング終了
 		player->ChangeState(std::make_unique<PlayerStateIdle>());

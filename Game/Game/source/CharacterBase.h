@@ -21,7 +21,7 @@ public:
 
 	// ゲッター　セッター
 	float GetHP() const { return _hp; }
-	float GetSpeed() const { return _speed; }
+	virtual float GetSpeed() const { return _speed; }
 
 	void SetHP(float hp) { _hp = hp; }
 	void SetSpeed(float speed) { _speed = speed; }

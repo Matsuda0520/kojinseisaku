@@ -1,5 +1,6 @@
 #include "ApplicationMain.h"
 #include "ModeGame.h"
+#include "ModeTitle.h"
 
 // グローバルなインスタンス
 ApplicationMain g_oApplicationMain;
@@ -12,6 +13,9 @@ bool ApplicationMain::Initialize(HINSTANCE hInstance)
 	// モードの追加
 	auto game = std::make_unique<ModeGame>();
 	ModeServer::GetInstance().Add(std::move(game), 1, "game");
+
+	auto title = std::make_unique<ModeTitle>();
+	ModeServer::GetInstance().Add(std::move(title), 50, "title");
 
 	return true;
 }

@@ -16,6 +16,7 @@ public:
 
 	// プレイヤーを登録
 	void SetTarget(GameObject* target) { _target = target; }
+	void SetLaserSpawnEnabled(bool enabled) { _isLaserSpawnEnabled = enabled; }
 
 	// ステージに必要なオブジェクトを生成し、自身の子として追加する
 	void BuildInitialStage();
@@ -33,5 +34,7 @@ private:
 	std::vector<float> _laserHeightPresets;// レーザーの高さプリセット
 
 	float _nextSpawnZ;
+
+	bool _isLaserSpawnEnabled;
 };
 

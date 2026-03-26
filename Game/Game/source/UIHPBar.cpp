@@ -48,8 +48,8 @@ void UIHPBar::Render()
 	int right = left + static_cast<int>(_size.GetX());
 	int buttom = top + static_cast<int>(_size.GetY());
 
-	// îwåiÇÃçïòg
-	DrawBox(left, top, right, buttom, GetColor(0, 0, 0), TRUE);
+	// îwåiÇÃòg
+	DrawBox(left, top, right, buttom, GetColor(128, 128, 128), TRUE);
 
 	// HpÉQÅ[ÉW
 	int barRight = left + static_cast<int>(_size.GetX() * _currentHpRate);

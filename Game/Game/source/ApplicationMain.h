@@ -13,6 +13,6 @@ public:
 	bool Render() override;
 
 	bool AppWindowed() override { return true; }
-	int DispSizeW() override { return 1280; }
-	int DispSizeH() override { return 720; }
+	int DispSizeW() override { return 1920; }
+	int DispSizeH() override { return 1080; }
 };

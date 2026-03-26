@@ -37,6 +37,7 @@ public:
 	virtual IAttacker* AsAttacker() { return nullptr; }
 	virtual const IAttacker* AsAttacker() const { return nullptr; }
 	virtual class CharacterBase* AsCharacter() { return nullptr; }// キャラクター型か
+	virtual class Player* AsPlayer() { return nullptr; }// プレイヤー型か
 
 	// ゲッター / セッター
 	const char* GetName() const { return _name; }

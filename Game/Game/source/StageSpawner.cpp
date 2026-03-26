@@ -15,7 +15,7 @@ namespace
 	// レーザー関連
 	constexpr int LASER_POOL_SIZE = 10;// レーザーの総数
 	constexpr float LASER_RADIUS = 20.0f;// レーザーの半径
-	constexpr float LASER_SPAWN_INTERVAL = 180.0f;// 再配置間隔(フレーム)
+	constexpr float LASER_SPAWN_INTERVAL = 120.0f;// 再配置間隔(フレーム)
 	constexpr float LASER_DELETE_DISTANCE = 100.0f;// レーザー再配置用
 }
 
@@ -24,12 +24,12 @@ StageSpawner::StageSpawner(const char* name)
 	, _target(nullptr)
 	, _nextSpawnZ(-FLOOR_LENGTH_Z)// 最初の床は少し前から
 	, _laserSpawnTimer(0.0f)
+	, _isLaserSpawnEnabled(true)
 {
 	// レーザーの高さプリセットを設定
 	_laserHeightPresets = { 
-		50.0f, // しゃがみ
-		150.0f, // 通常
-		250.0f // ジャンプ
+		50.0f, // ジャンプ
+		150.0f, // しゃがみ
 	};
 }
 
@@ -61,43 +61,46 @@ void StageSpawner::Process()
 		_nextSpawnZ += FLOOR_LENGTH_Z;
 	}
 
-	// レーザーのタイマー再配置
-	_laserSpawnTimer += 1.0f;
-
-	// 再配置間隔に達したらレーザーを配置する
-	if (_laserSpawnTimer >= LASER_SPAWN_INTERVAL)
+	if (_isLaserSpawnEnabled)
 	{
-		_laserSpawnTimer = 0.0f;
+		// レーザーのタイマー再配置
+		_laserSpawnTimer += 1.0f;
 
-		Laser* laser = GetInactiveLaserFromPool();
-		if (laser)
+		// 再配置間隔に達したらレーザーを配置する
+		if (_laserSpawnTimer >= LASER_SPAWN_INTERVAL)
 		{
-			// レーザーをアクティブにする
-			laser->Revive();
+			_laserSpawnTimer = 0.0f;
 
-			// プリセットから抽選
-			int index = static_cast<int>(Math::RandomRange(0, _laserHeightPresets.size()));
-			float selectHeight = _laserHeightPresets[index];
+			Laser* laser = GetInactiveLaserFromPool();
+			if (laser)
+			{
+				// レーザーをアクティブにする
+				laser->Revive();
 
-			// プレイヤーの前方に配置
-			float spawnZ = targetZ + 3000.0f;
+				// プリセットから抽選
+				int index = static_cast<int>(Math::RandomRange(0, _laserHeightPresets.size()));
+				float selectHeight = _laserHeightPresets[index];
 
-			// 基準となるY座標とZ座標を渡してセットアップする
-			laser->Setup(selectHeight, spawnZ);
+				// プレイヤーの前方に配置
+				float spawnZ = targetZ + 3000.0f;
+
+				// 基準となるY座標とZ座標を渡してセットアップする
+				laser->Setup(selectHeight, spawnZ);
+			}
 		}
-	}
 
-	// 画面外に出たレーザーをプールに戻す
-	for (auto* laser : _laserPool)
-	{
-		// 非アクティブなレーザーはスキップ
-		if (laser->IsSleeping()) { continue; }
-
-		// 画面の邪魔になるため、レーザーは早めに見えなくする
-		if (laser->GetPosition().GetZ() < targetZ - LASER_DELETE_DISTANCE)
+		// 画面外に出たレーザーをプールに戻す
+		for (auto* laser : _laserPool)
 		{
-			// レーザーを非アクティブにする
-			laser->Sleep();
+			// 非アクティブなレーザーはスキップ
+			if (laser->IsSleeping()) { continue; }
+
+			// 画面の邪魔になるため、レーザーは早めに見えなくする
+			if (laser->GetPosition().GetZ() < targetZ - LASER_DELETE_DISTANCE)
+			{
+				// レーザーを非アクティブにする
+				laser->Sleep();
+			}
 		}
 	}
 }
@@ -130,7 +133,7 @@ void StageSpawner::BuildInitialStage()
 
 		// 各レーザーを指定数で生成してプールに入れる
 		if(i < 6) { laser = std::make_unique<NormalLaser>("NormalLaser"); }
-		else if(i < 8) { laser = std::make_unique<MovingLaser>("MovingLaser"); }
+		else if(i < 9) { laser = std::make_unique<MovingLaser>("MovingLaser"); }
 		else { laser = std::make_unique<RotatingLaser>("RotatingLaser"); }
 
 		// 初期状態は非アクティブにする

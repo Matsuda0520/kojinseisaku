@@ -1,4 +1,5 @@
 #include "ModeGame.h"
+#include "ModeGameOver.h"
 #include "GameComposite.h"
 #include "CharacterBase.h"
 #include "GameObjectFactory.h"
@@ -11,12 +12,19 @@
 #include "TPSCamera.h"
 #include "UIPanel.h"
 #include "UIHPBar.h"
+#include "UIDamageFlash.h"
+#include "UIScore.h"
 
 ModeGame::ModeGame()
 	: _cameraManager(nullptr)
 	, _lightManager(nullptr)
 	, _tpsCamera(nullptr)
+	, _stageSpawner(nullptr)
+	, _player(nullptr)
 	, _shadowMapHandle(-1)
+	, _isTitleDemo(true)
+	, _isStartMainGameRequested(false)
+	, _isGameOver(false)
 {
 }
 
@@ -52,14 +60,16 @@ bool ModeGame::Initialize()
 	// ステージの作成
 	// ---------------------------------------------------------
 	auto stageSpawner = std::make_unique<StageSpawner>();
+	_stageSpawner = stageSpawner.get();
 	// 初期ステージの構築
-	stageSpawner->BuildInitialStage();
+	_stageSpawner->BuildInitialStage();
 
 	// ---------------------------------------------------------
 	// プレイヤーの作成
 	// ---------------------------------------------------------
 	_playerSpawner = std::make_unique<Spawner>(_sceneRoot.get());
 	GameObject* playerPtr = _playerSpawner->SpawnPlayer("Player", Vector4(0.0f, 0.0f, 0.0f));
+	_player = playerPtr->AsPlayer();
 
 	// ---------------------------------------------------------
 	// カメラの作成と登録
@@ -72,24 +82,38 @@ bool ModeGame::Initialize()
 	// ---------------------------------------------------------
 	// プレイヤーの登録
 	// ---------------------------------------------------------
-	stageSpawner->SetTarget(playerPtr);
+	_stageSpawner->SetTarget(playerPtr);
 	_sceneRoot->AddChild(std::move(stageSpawner));
+
+	if (_stageSpawner)
+	{
+		_stageSpawner->SetLaserSpawnEnabled(false);
+	}
 
 	if (_tpsCamera)
 	{
 		_tpsCamera->SetTarget(playerPtr);
+		_tpsCamera->SetOffset(-180.0f, 150.0f, 100.0f);// デモ用の近距離オフセット
 	}
 
 	// ---------------------------------------------------------
 	// UIルートノードの作成
 	// ---------------------------------------------------------
-	_uiRoot = std::make_unique<UIPanel>(0.0f, 0.0f, 1280.0f, 720.0f);// 解像度に合わせる
+	_uiRoot = std::make_unique<UIPanel>(0.0f, 0.0f, 1920.0f, 1080.0f);// 解像度に合わせる
 	// UI要素の生成と登録
 	CharacterBase* character = playerPtr->AsCharacter();
 	if (character)
 	{
-		auto hpBar = std::make_unique<UIHPBar>(character, 50.0f, 50.0f, 300.0f, 20.0f);
+		character->AddObserver(this);
+
+		auto hpBar = std::make_unique<UIHPBar>(character, 100.0f, 50.0f, 300.0f, 20.0f);
 		_uiRoot->AddChild(std::move(hpBar));
+
+		auto damageFlash = std::make_unique<UIDamageFlash>(character, 1920, 1080);// 解像度
+		_uiRoot->AddChild(std::move(damageFlash));
+
+		auto uiScore = std::make_unique<UIScore>(this, 1500.0f, 50.0f);
+		_uiRoot->AddChild(std::move(uiScore));
 	}
 
 	_shadowMapHandle = MakeShadowMap(2048, 2048);
@@ -99,6 +123,12 @@ bool ModeGame::Initialize()
 
 bool ModeGame::Terminate()
 {
+	if (_uiRoot)
+	{
+		_uiRoot->Terminate();
+		_uiRoot.reset();
+	}
+
 	if (_sceneRoot)
 	{
 		_sceneRoot->Terminate();
@@ -108,23 +138,56 @@ bool ModeGame::Terminate()
 	_playerSpawner.reset();
 	CollisionManager::GetInstance().Terminate();
 
+	_scoreObservers.clear();
+
 	return true;
 }
 
 bool ModeGame::Process()
 {
+	if (_isStartMainGameRequested)
+	{
+		StartMainGame();
+		_isStartMainGameRequested = false;
+	}
+
 	// シーンの更新
 	if (_sceneRoot)
 	{
 		// ルートツリーの更新
 		_sceneRoot->Process();
 	}
-	CollisionManager::GetInstance().Process();
 
-	// UIの更新
-	if (_uiRoot)
+	if (!_isTitleDemo)
 	{
-		_uiRoot->Process();
+		CollisionManager::GetInstance().Process();
+
+		// UIの更新
+		if (_uiRoot)
+		{
+			_uiRoot->Process();
+		}
+	}
+
+	if (!_isTitleDemo && !_isGameOver)
+	{
+		// プレイヤーのスピード倍率を取得(速いほどスコアが増える)
+		float speedMultiplier = 1.0f;
+		if (_player) 
+		{
+			speedMultiplier = _player->GetSpeedMultiplier();
+		}
+
+		// 毎フレーム10点*スピード倍率
+		_scoreAccumulator += 10.0f * speedMultiplier;
+
+		// 浮動小数点で蓄積し、1以上になったら整数スコアに反映
+		if (_scoreAccumulator >= 1.0f)
+		{
+			int addVal = static_cast<int>(_scoreAccumulator);
+			AddScore(addVal);
+			_scoreAccumulator -= addVal;// 端数を残す
+		}
 	}
 
 	return true;
@@ -189,22 +252,57 @@ bool ModeGame::Render()
 	// UIの描画
 	SetUseZBuffer3D(FALSE);// Zバッファを無効にする
 	SetWriteZBuffer3D(FALSE);
-	if (_uiRoot)
+	if (!_isTitleDemo && _uiRoot)
 	{
 		_uiRoot->Render();
+	}
+
+	if (_isGameOver)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 140);
+		DrawBox(0, 0, 1920, 1080, GetColor(0, 0, 0), TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 
 	return true;
 }
 
-void ModeGame::OnPlayerDamaged(Player* player)
+void ModeGame::RequestStartMainGame()
 {
-	// プレイヤーがダメージを受けたとき
+	_isStartMainGameRequested = true;
 }
 
-void ModeGame::OnPlayerDied(Player* player)
+void ModeGame::StartMainGame()
+{
+	if (!_isTitleDemo) { return; }
+
+	_isTitleDemo = false;
+
+	if (_player)
+	{
+		_player->SetSpeedUpActive(true);
+	}
+
+	if (_tpsCamera)
+	{
+		_tpsCamera->SetOffset(-450.0f, 400.0f, 150.0f);// 本編カメラへ戻す
+	}
+
+	if (_stageSpawner)
+	{
+		_stageSpawner->SetLaserSpawnEnabled(true);
+	}
+}
+
+void ModeGame::OnDied()
 {
 	// プレイヤーが死亡したとき
+	if (_isGameOver) { return; }
+
+	_isGameOver = true;
+
+	auto gameOver = std::make_unique<ModeGameOver>();
+	ModeServer::GetInstance().Add(std::move(gameOver), 100, "gameover");
 }
 
 void ModeGame::OnUIClicked(UIElement* sender)
@@ -225,4 +323,40 @@ void ModeGame::OnUIHoverExited(UIElement* sender)
 void ModeGame::OnUIValueChanged(UIElement* sender, float value)
 {
 	// UIの値が変更されたとき
+}
+
+// スコア加算と通知処理
+void ModeGame::AddScore(int amount)
+{
+	_score += amount;
+	NotifyScoreChanged();
+}
+
+// Observer関連の実装
+void ModeGame::AddScoreObserver(IScoreObserver* observer)
+{
+	if (std::find(
+		_scoreObservers.begin(), _scoreObservers.end(), observer) == _scoreObservers.end()
+		) 
+	{
+		_scoreObservers.push_back(observer);
+		// 登録された瞬間に現在のスコアを教える
+		observer->OnScoreChanged(_score);
+	}
+}
+
+void ModeGame::RemoveScoreObserver(IScoreObserver* observer)
+{
+	_scoreObservers.erase(
+		std::remove(_scoreObservers.begin(), _scoreObservers.end(), observer),
+		_scoreObservers.end()
+	);
+}
+
+void ModeGame::NotifyScoreChanged()
+{
+	for (auto* obs : _scoreObservers) 
+	{
+		if (obs) { obs->OnScoreChanged(_score); }
+	}
 }

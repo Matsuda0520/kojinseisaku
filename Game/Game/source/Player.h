@@ -37,11 +37,17 @@ public:
 	// 自分が保持しているコライダーを返す
 	ICollider* AsCollider() override { return _collider; }
 	const ICollider* AsCollider() const override { return _collider; }
+	virtual Player* AsPlayer() override { return this; }
 
 	// 状態別の衝突イベント
 	void OnCollisionEnter(GameObject* other) override;
 	void OnCollisionStay(GameObject* other) override {}
 	void OnCollisionExit(GameObject* other) override {}
+
+	float GetSpeedMultiplier() const { return _speedMultiplier; }
+	float GetSpeed() const override { return _speed * _speedMultiplier; }
+
+	void SetSpeedUpActive(bool active) { _isSpeedUpActive = active; }
 
 private:
 	// カプセルのパラメータを適用して、コライダーの線分を更新する
@@ -55,5 +61,8 @@ private:
 
 	float _capsuleRadius;// カプセルの半径
 	float _capsuleHalfHeight;// カプセルの半分の高さ
+
+	float _speedMultiplier = 1.0f;// 移動速度の倍率
+	bool _isSpeedUpActive = false;
 };
 

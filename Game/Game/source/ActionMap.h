@@ -13,6 +13,7 @@ enum class InputAction
 	MoveRight,// 右移動
 	Jump,// ジャンプ
 	Roll,// ローリング
+	Start,// スタート(タイトル)
 	_EOT_
 };
 

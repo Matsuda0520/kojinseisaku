@@ -61,6 +61,14 @@ void Player::Process()
 {
 	if (_isDead) { return; }
 
+	if (_isSpeedUpActive)
+	{
+		if (_speedMultiplier < 2.5f)
+		{
+			_speedMultiplier += 0.0005f;
+		}
+	}
+
 	// CharacterBase::Process()‚ÅMove()‚ªŒÄ‚Î‚ê‚é
 	CharacterBase::Process();
 
@@ -160,7 +168,15 @@ Vector4 Player::GetInputVelocity() const
 
 bool Player::PlayAnimation(const char* animName, float blendFrame, int loopCnt, float playSpeed)
 {
-	return _animManager.ChangeAnimationByName(animName, blendFrame, loopCnt, playSpeed);
+	float actualPlaySpeed = playSpeed * _speedMultiplier;
+
+	float actualBlendFrame = blendFrame;
+	if (_speedMultiplier > 0.0f)
+	{
+		actualBlendFrame = blendFrame / _speedMultiplier;
+	}
+
+	return _animManager.ChangeAnimationByName(animName, actualBlendFrame, loopCnt, actualPlaySpeed);
 }
 
 void Player::OnCollisionEnter(GameObject* other)

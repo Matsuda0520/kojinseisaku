@@ -24,6 +24,11 @@ void MovingLaser::Setup(float centerY, float baseZ)
 	_baseY = 150.0f;// Y座標は固定
 	_baseZ = baseZ;
 	_time = 0.0f;// 同じ動き始めにするため、時間をリセット
+
+	// 移動方向をランダム化
+	float direction = Math::RandomRange(0.0f, 1.0f) < 0.5f ? -1.0f : 1.0f;
+	_speed *= direction;
+
 	UpdateCapsule();
 }
 

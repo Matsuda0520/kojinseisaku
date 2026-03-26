@@ -3,7 +3,7 @@
 RotatingLaser::RotatingLaser(const char* name)
 	: Laser(name)
 	, _angle(0.0f)
-	, _rotateSpeed(0.01f)
+	, _rotateSpeed(0.015f)
 	, _length(400.0f)
 {
 }
@@ -21,7 +21,7 @@ void RotatingLaser::Process()
 void RotatingLaser::Setup(float centerY, float baseZ)
 {
 	// スポナーからの基準位置を保存
-	_baseY = 200.0f;// Y座標は固定
+	_baseY = 180.0f;// Y座標は固定
 	_baseZ = baseZ;
 	_angle = 0.0f;// 同じ動き始めにするため、角度をリセット
 	UpdateCapsule();
