@@ -16,6 +16,7 @@ namespace
 	constexpr int LASER_POOL_SIZE = 10;// レーザーの総数
 	constexpr float LASER_RADIUS = 20.0f;// レーザーの半径
 	constexpr float LASER_SPAWN_INTERVAL = 180.0f;// 再配置間隔(フレーム)
+	constexpr float LASER_DELETE_DISTANCE = 50.0f;// レーザー再配置用
 }
 
 StageSpawner::StageSpawner(const char* name)
@@ -92,8 +93,8 @@ void StageSpawner::Process()
 		// 非アクティブなレーザーはスキップ
 		if (laser->IsSleeping()) { continue; }
 
-		// レーザーが削除ラインより後ろに移動したら
-		if (laser->GetPosition().GetZ() < targetZ - DELETE_DISTANCE)
+		// 画面の邪魔になるため、レーザーは早めに見えなくする
+		if (laser->GetPosition().GetZ() < targetZ - LASER_DELETE_DISTANCE)
 		{
 			// レーザーを非アクティブにする
 			laser->Sleep();

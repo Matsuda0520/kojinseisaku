@@ -6,7 +6,7 @@ Laser::Laser(const char* name)
 	, _collider(nullptr)
 	, _capsuleStart()
 	, _capsuleEnd(0.0f, 0.0f, 100.0f)
-	, _capsuleRadius(40.0f)
+	, _capsuleRadius(20.0f)
 	, _attackPower(10.0f)
 	, _isSleeping(false)
 	, _baseY(0.0f)
@@ -49,8 +49,30 @@ void Laser::Render()
 	// 死亡状態、非アクティブなら描画しない
 	if (_isDead || _isSleeping) { return; }
 
-	// test
-	DrawLine3D(ToDX(_capsuleStart), ToDX(_capsuleEnd), GetColor(255, 0, 0));
+	// DxLibへの変換
+	VECTOR startPos = ToDX(_capsuleStart);
+	VECTOR endPos = ToDX(_capsuleEnd);
+
+	float time = GetNowCount() * 0.001f;// 秒単位に変換
+	float flickerSpeed = 20.0f;// 点滅の速さ
+	// sin波で0.0~1.0の値を作る(sinは-1.0~1.0なので、+1して0.0~2.0にしてから*0.5して0.0~1.0にする)
+	float flicker = (std::sin(time * flickerSpeed) + 1.0f) * 0.5f;
+
+	int outAlpha = 220 + static_cast<int>(flicker * 10);// アルファ値を点滅させる
+	SetDrawBlendMode(DX_BLENDMODE_ADD, outAlpha);// 加算合成で半透明にする
+
+	// 外側のオーラを描画
+	unsigned int outColor = GetColor(255, 0, 0);// 赤色
+	DrawCapsule3D(startPos, endPos, _capsuleRadius, 12, outColor, outColor, TRUE);
+
+	//int inAlpha = 240 + static_cast<int>(flicker * 15);// 明るめの値
+	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, inAlpha);// 加算合成で発光させる
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);// ブレンドモードを元に戻す
+
+	// 内側のコアを描画
+	unsigned int inColor = GetColor(255, 69, 0);// 白色
+	float coreRadius = _capsuleRadius * (0.3f + flicker * 0.2f);// 小さめの半径で変化
+	DrawCapsule3D(startPos, endPos, coreRadius, 12, inColor, inColor, TRUE);
 
 	GameComposite::Render();
 }
