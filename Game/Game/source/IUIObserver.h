@@ -10,11 +10,11 @@ public:
 
 	// イベントごとの実装
 	// UIがクリックされたとき
-	virtual void OnUIClicked(UIElement* element) = 0;
+	virtual void OnUIClicked(UIElement* element) {}
 	// マウスがUIに入ったとき　離れたとき
-	virtual void OnUIHoverEntered(UIElement* element) = 0;
-	virtual void OnUIHoverExited(UIElement* element) = 0;
+	virtual void OnUIHoverEntered(UIElement* element) {}
+	virtual void OnUIHoverExited(UIElement* element) {}
 
 	// スライダーの値が変更されたとき
-	virtual void OnUIValueChanged(UIElement* element, float value) = 0;
+	virtual void OnUIValueChanged(UIElement* element, float value) {}
 };

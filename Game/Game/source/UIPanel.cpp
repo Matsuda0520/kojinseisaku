@@ -2,7 +2,7 @@
 
 void UIPanel::Process()
 {
-	if (!_isDead) { return; }
+	if (_isDead) { return; }
 
 	// 追加予約された子をコンテナに移す
 	for (auto& newChild : _pendingChildren)
@@ -29,7 +29,7 @@ void UIPanel::Process()
 
 void UIPanel::Render()
 {
-	if (!_isDead) { return; }
+	if (_isDead) { return; }
 
 	// まずパネルを描画する
 	Vector2 globalPos = GetGlobalPos();

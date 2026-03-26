@@ -1,7 +1,7 @@
 #include "Player.h"
 #include "PlayerState.h"
 #include "ActionMap.h"
-#include "IPlayerObserver.h"
+#include "IHPObserver.h"
 
 namespace
 {
@@ -19,7 +19,8 @@ Player::Player(const char* name)
 	, _capsuleRadius(DEFAULT_CAP_RAD)
 	, _capsuleHalfHeight(DEFAULT_CAP_HH)
 {
-	_hp = 100.0f;
+	_maxHp = 100.0f;
+	_hp = _maxHp;
 	_speed = 5.0f;
 
 	// 初期状態は待機状態
@@ -98,7 +99,7 @@ void Player::TakeDamage(float damage)
 	// ダメージ通知
 	if(_hp < prevHp)
 	{
-		NotifyDamage();
+		NotifyHPChanged();
 	}
 
 	// 死亡通知
@@ -183,50 +184,6 @@ void Player::SetRollingCollider()
 void Player::ResetCollider()
 {
 	ApplyCapsule(DEFAULT_CAP_RAD, DEFAULT_CAP_HH);
-}
-
-void Player::AddObserver(IPlayerObserver* observer)
-{
-	if (!observer) { return; }
-
-	auto it = std::find(_observers.begin(), _observers.end(), observer);
-	if (it == _observers.end())
-	{
-		_observers.push_back(observer);
-	}
-}
-
-void Player::RemoveObserver(IPlayerObserver* observer)
-{
-	if (!observer) { return; }
-
-	_observers.erase(
-		std::remove(
-			_observers.begin(), _observers.end(), observer), 
-		_observers.end()
-	);
-}
-
-void Player::NotifyDamage()
-{
-	for (auto observer : _observers)
-	{
-		if (observer)
-		{
-			observer->OnPlayerDamaged(this);
-		}
-	}
-}
-
-void Player::NotifyDeath()
-{
-	for (auto observer : _observers)
-	{
-		if (observer)
-		{
-			observer->OnPlayerDied(this);
-		}
-	}
 }
 
 void Player::ApplyCapsule(float radius, float halfHeight)

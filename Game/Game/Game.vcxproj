@@ -183,6 +183,7 @@
     <ClCompile Include="source\TPSCamera.cpp" />
     <ClCompile Include="source\UIElement.cpp" />
     <ClCompile Include="source\UIPanel.cpp" />
+    <ClCompile Include="source\UIHPBar.cpp" />
     <ClCompile Include="source\UISlider.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -201,6 +202,7 @@
     <ClInclude Include="source\GameObjectFactory.h" />
     <ClInclude Include="source\IAttacker.h" />
     <ClInclude Include="source\ICollider.h" />
+    <ClInclude Include="source\IHPObserver.h" />
     <ClInclude Include="source\IPlayerObserver.h" />
     <ClInclude Include="source\IUIObserver.h" />
     <ClInclude Include="source\Laser.h" />
@@ -216,6 +218,7 @@
     <ClInclude Include="source\TPSCamera.h" />
     <ClInclude Include="source\UIElement.h" />
     <ClInclude Include="source\UIPanel.h" />
+    <ClInclude Include="source\UIHPBar.h" />
     <ClInclude Include="source\UISlider.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

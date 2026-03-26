@@ -1,5 +1,6 @@
 #include "ModeGame.h"
 #include "GameComposite.h"
+#include "CharacterBase.h"
 #include "GameObjectFactory.h"
 #include "Spawner.h"
 #include "StageSpawner.h"
@@ -8,6 +9,8 @@
 #include "LightManager.h"
 #include "Player.h"
 #include "TPSCamera.h"
+#include "UIPanel.h"
+#include "UIHPBar.h"
 
 ModeGame::ModeGame()
 	: _cameraManager(nullptr)
@@ -76,6 +79,18 @@ bool ModeGame::Initialize()
 		_tpsCamera->SetTarget(playerPtr);
 	}
 
+	// ---------------------------------------------------------
+	// UIルートノードの作成
+	// ---------------------------------------------------------
+	_uiRoot = std::make_unique<UIPanel>(0.0f, 0.0f, 1280.0f, 720.0f);// 解像度に合わせる
+	// UI要素の生成と登録
+	CharacterBase* character = playerPtr->AsCharacter();
+	if (character)
+	{
+		auto hpBar = std::make_unique<UIHPBar>(character, 50.0f, 50.0f, 300.0f, 20.0f);
+		_uiRoot->AddChild(std::move(hpBar));
+	}
+
 	return true;
 }
 
@@ -95,13 +110,19 @@ bool ModeGame::Terminate()
 
 bool ModeGame::Process()
 {
+	// シーンの更新
 	if (_sceneRoot)
 	{
 		// ルートツリーの更新
 		_sceneRoot->Process();
 	}
-
 	CollisionManager::GetInstance().Process();
+
+	// UIの更新
+	if (_uiRoot)
+	{
+		_uiRoot->Process();
+	}
 
 	return true;
 }
@@ -119,6 +140,14 @@ bool ModeGame::Render()
 	{
 		// ルートツリーの描画
 		_sceneRoot->Render();
+	}
+
+	// UIの描画
+	SetUseZBuffer3D(FALSE);// Zバッファを無効にする
+	SetWriteZBuffer3D(FALSE);
+	if (_uiRoot)
+	{
+		_uiRoot->Render();
 	}
 
 	return true;

@@ -3,9 +3,23 @@
 CharacterBase::CharacterBase(const char* name) 
 	: GameComposite(name)
 	, _hp(100.0f)
+	, _maxHp(100.0f)
 	, _speed(1.0f)
 	, _modelHandle(-1)
 {
+}
+
+CharacterBase::~CharacterBase()
+{
+	// 自身が破棄される前に、オブザーバーに通知しておく
+	for (auto* observer : _observers)
+	{
+		if (observer)
+		{
+			observer->OnTargetDestroyed();
+		}
+	}
+	_observers.clear();
 }
 
 void CharacterBase::Initialize()
@@ -76,10 +90,74 @@ void CharacterBase::TakeDamage(float damage)
 {
 	if (_isDead) { return; }
 
+	float prevHp = _hp;// ダメージ前のHpを保存
 	_hp -= damage;
+
+	// Hpが減少した場合に通知する
+	if (_hp < prevHp)
+	{
+		NotifyHPChanged();
+	}
+
 	if (_hp <= 0.0f)
 	{
 		_hp = 0.0f;
+
+		// このダメージで死亡した場合に通知する
+		if (prevHp > 0.0f)
+		{
+			NotifyDeath();
+		}
+
 		Destroy();// 破棄フラグを立てる
+	}
+}
+
+// オブザーバーの追加
+void CharacterBase::AddObserver(IHPObserver* observer)
+{
+	if (!observer) { return; }
+
+	auto it = std::find(_observers.begin(), _observers.end(), observer);
+	if (it == _observers.end())
+	{
+		_observers.push_back(observer);
+	}
+}
+
+// オブザーバーの削除
+void CharacterBase::RemoveObserver(IHPObserver* observer)
+{
+	if (!observer) { return; }
+
+	_observers.erase(
+		std::remove(
+			_observers.begin(), _observers.end(), observer),
+		_observers.end()
+	);
+}
+
+// Hp変更の通知
+void CharacterBase::NotifyHPChanged()
+{
+	for (auto observer : _observers)
+	{
+		if (observer)
+		{
+			// 現在のHpと最大Hpを渡す
+			observer->OnHPChanged(_hp, _maxHp);
+		}
+	}
+}
+
+// 死亡の通知
+void CharacterBase::NotifyDeath()
+{
+	for (auto observer : _observers)
+	{
+		if (observer)
+		{
+			observer->OnDied();
+		}
 	}
 }

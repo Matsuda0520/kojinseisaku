@@ -9,6 +9,7 @@ class StageSpawner;
 class CameraManager;
 class LightManager;
 class TPSCamera;
+class UIPanel;
 
 class ModeGame : public ModeBase, public IPlayerObserver, public IUIObserver
 {
@@ -33,6 +34,7 @@ public:
 
 private:
 	std::unique_ptr<GameComposite> _sceneRoot;// シーンのルートノード
+	std::unique_ptr<UIPanel> _uiRoot;// UIのルートノード
 	std::unique_ptr<Spawner> _playerSpawner;// プレイヤースポナー
 
 	CameraManager* _cameraManager;

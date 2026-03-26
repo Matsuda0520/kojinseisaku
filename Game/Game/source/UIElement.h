@@ -9,8 +9,8 @@ class IUIObserver;
 class UIElement
 {
 public:
-	UIElement(float x, float y) 
-		: _localPos(x, y), _parent(nullptr), _isDead(false) {}
+	UIElement(float x, float y, float w = 0.0f, float h = 0.0f) 
+		: _localPos(x, y), _size(w, h), _parent(nullptr), _isDead(false) {}
 	virtual ~UIElement() = default;
 
 	virtual void Initialize() = 0;
@@ -26,8 +26,11 @@ public:
 
 	// 座標管理
 	Vector2 GetLocalPos() const { return _localPos; }
+	Vector2 GetSize() const { return _size; }
+
 	void SetLocalPos(const Vector2& pos) { _localPos = pos; }
 	void SetLocalPos(float x, float y) { _localPos.Set(x, y); }
+	void SetSize(const Vector2& size) { _size = size; }
 
 	// 親を辿ってグローバル座標を計算する
 	Vector2 GetGlobalPos() const;
@@ -48,6 +51,7 @@ protected:
 	void NotifyValueChanged(float value);
 
 	Vector2 _localPos;// ローカル座標
+	Vector2 _size;// 幅と高さ
 	UIElement* _parent;// 親への参照
 	bool _isDead;
 

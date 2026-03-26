@@ -10,8 +10,10 @@ public:
 	UIPanel(const Vector2& pos, float width, float height)
 		: UIElement(pos.GetX(), pos.GetY()), _width(width), _height(height) {}
 
+	void Initialize() override {}
 	void Process() override;
 	void Render() override;
+	void Terminate() override {}
 
 	void AddChild(std::unique_ptr<UIElement> child) override;
 
