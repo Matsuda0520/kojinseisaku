@@ -24,8 +24,10 @@ public:
 	// オーナーを返す
 	GameObject* GetOwner() override { return _owner; }
 
-	// 衝突時はオーナーのOnCollisionを呼び出す
-	void OnCollision(GameObject* other) override;
+	// 衝突時はオーナーの対応するイベントを呼び出す
+	void OnCollisionEnter(GameObject* other) override;
+	void OnCollisionStay(GameObject* other) override;
+	void OnCollisionExit(GameObject* other) override;
 
 	// カプセル情報(線分 + 半径)で定義
 	Vector4 GetCapsuleStart() const override { return _segmentStart; }

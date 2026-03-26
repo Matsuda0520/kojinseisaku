@@ -15,7 +15,6 @@ GameObject* Spawner::SpawnPlayer(const std::string& playerName, const Vector4& p
 	std::unique_ptr<GameObject> player = GameObjectFactory::GetInstance().Create(playerName);
 	if (!player) { return nullptr; }
 
-	player->Initialize();
 	player->SetPosition(pos);
 
 	// 生ポインタを取得してから所有権を渡す

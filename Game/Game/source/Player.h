@@ -38,8 +38,10 @@ public:
 	ICollider* AsCollider() override { return _collider; }
 	const ICollider* AsCollider() const override { return _collider; }
 
-	// 衝突イベント
-	void OnCollision(GameObject* other) override;
+	// 状態別の衝突イベント
+	void OnCollisionEnter(GameObject* other) override;
+	void OnCollisionStay(GameObject* other) override {}
+	void OnCollisionExit(GameObject* other) override {}
 
 private:
 	// カプセルのパラメータを適用して、コライダーの線分を更新する

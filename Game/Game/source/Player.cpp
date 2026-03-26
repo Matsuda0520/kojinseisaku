@@ -7,7 +7,7 @@ namespace
 {
 	// デフォルトのカプセルサイズ
 	constexpr float DEFAULT_CAP_RAD = 20.0f;// 半径
-	constexpr float DEFAULT_CAP_HH = 45.0f;// 半分の高さ
+	constexpr float DEFAULT_CAP_HH = 70.0f;// 半分の高さ
 
 	// ローリング中のカプセルサイズ
 	constexpr float ROLL_CAP_RAD = 20.0f;
@@ -21,7 +21,7 @@ Player::Player(const char* name)
 {
 	_maxHp = 100.0f;
 	_hp = _maxHp;
-	_speed = 5.0f;
+	_speed = 7.5f;
 
 	// 初期状態は待機状態
 	_currentState = std::make_unique<PlayerStateIdle>();
@@ -163,7 +163,7 @@ bool Player::PlayAnimation(const char* animName, float blendFrame, int loopCnt, 
 	return _animManager.ChangeAnimationByName(animName, blendFrame, loopCnt, playSpeed);
 }
 
-void Player::OnCollision(GameObject* other)
+void Player::OnCollisionEnter(GameObject* other)
 {
 	if (!other) { return; }
 
@@ -202,10 +202,13 @@ void Player::UpdateCapsuleSegment()
 {
 	if (!_collider) { return; }
 
-	// プレイヤー位置を中心に、Y軸方向に半分の高さだけずらした線分を作成
+	// プレイヤーの足元がカプセルの一番下になるように計算
 	Vector4 pos = GetPosition();
-	Vector4 start = pos + Vector4(0.0f, _capsuleHalfHeight, 0.0f);
-	Vector4 end = pos + Vector4(0.0f, -_capsuleHalfHeight, 0.0f);
+	// 線分の下端は、足元からカプセルの半径分だけ上にずらす
+	Vector4 end = pos + Vector4(0.0f, _capsuleRadius, 0.0f);
+	// 線分の上端は、下端から線分の長さだけ上にずらす
+	Vector4 start = end + Vector4(0.0f, _capsuleHalfHeight * 2.0f, 0.0f);
+
 
 	// 線分をコライダーに適用
 	_collider->SetCapsuleSegment(start, end);

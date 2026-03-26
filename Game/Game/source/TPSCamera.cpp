@@ -3,8 +3,8 @@
 
 TPSCamera::TPSCamera()
 	: _target(nullptr)
-	, _distance(-500.0f)// プレイヤーからの距離
-	, _height(300.0f)// プレイヤーからの高さ
+	, _distance(-450.0f)// プレイヤーからの距離
+	, _height(400.0f)// プレイヤーからの高さ
 	, _lookAtHeight(150.0f)// プレイヤーのどこを見るか
 	, _fixedTargetY(0.0f)
 	, _isFixedTargetYInit(false)

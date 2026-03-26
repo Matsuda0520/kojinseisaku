@@ -12,6 +12,7 @@
 #include <array>
 #include <utility>
 #include <deque>
+#include <set>
 
 #include "DxLib.h"
 #include "Application/ApplicationBase.h"

@@ -27,7 +27,9 @@ public:
 	virtual void AddChild(std::unique_ptr<GameObject> child) {}
 
 	// 衝突イベントを基底クラスで定義しておく
-	virtual void OnCollision(GameObject* other) {}
+	virtual void OnCollisionEnter(GameObject* other) {}
+	virtual void OnCollisionStay(GameObject* other) {}
+	virtual void OnCollisionExit(GameObject* other) {}
 
 	// キャスト削減のため、仮想関数で定義しておく
 	virtual ICollider* AsCollider() { return nullptr; }

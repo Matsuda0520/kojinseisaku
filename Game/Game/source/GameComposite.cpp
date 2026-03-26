@@ -25,6 +25,7 @@ void GameComposite::Process()
 	// 追加予約された子をコンテナに移す
 	for (auto& newChild : _pendingChildren)
 	{
+		newChild->Initialize();// 追加された子は初期化してから追加する
 		_children.push_back(std::move(newChild));
 	}
 	_pendingChildren.clear();

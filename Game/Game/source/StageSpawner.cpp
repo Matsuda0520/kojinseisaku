@@ -16,7 +16,7 @@ namespace
 	constexpr int LASER_POOL_SIZE = 10;// レーザーの総数
 	constexpr float LASER_RADIUS = 20.0f;// レーザーの半径
 	constexpr float LASER_SPAWN_INTERVAL = 180.0f;// 再配置間隔(フレーム)
-	constexpr float LASER_DELETE_DISTANCE = 50.0f;// レーザー再配置用
+	constexpr float LASER_DELETE_DISTANCE = 100.0f;// レーザー再配置用
 }
 
 StageSpawner::StageSpawner(const char* name)
@@ -134,7 +134,6 @@ void StageSpawner::BuildInitialStage()
 		else { laser = std::make_unique<RotatingLaser>("RotatingLaser"); }
 
 		// 初期状態は非アクティブにする
-		laser->Initialize();
 		laser->Sleep();
 
 		// 管理用のポインタを保持

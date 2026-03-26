@@ -40,5 +40,7 @@ private:
 	CameraManager* _cameraManager;
 	LightManager* _lightManager;
 	TPSCamera* _tpsCamera;
+
+	int _shadowMapHandle;// シャドウマップのハンドル
 };
 

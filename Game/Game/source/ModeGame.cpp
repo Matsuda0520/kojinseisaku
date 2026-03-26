@@ -16,6 +16,7 @@ ModeGame::ModeGame()
 	: _cameraManager(nullptr)
 	, _lightManager(nullptr)
 	, _tpsCamera(nullptr)
+	, _shadowMapHandle(-1)
 {
 }
 
@@ -91,6 +92,8 @@ bool ModeGame::Initialize()
 		_uiRoot->AddChild(std::move(hpBar));
 	}
 
+	_shadowMapHandle = MakeShadowMap(2048, 2048);
+
 	return true;
 }
 
@@ -136,11 +139,52 @@ bool ModeGame::Render()
 		SetUseBackCulling(TRUE);
 	}
 
-	if (_sceneRoot)
+	//----------------------------------------------------------------------------
+	// シャドウマップが想定するライトの方向もセット
+	SetShadowMapLightDirection(_shadowMapHandle, VGet(0.0f, -1.0f, -0.5f));// 真下からの光を想定
+
+	// シャドウマップに描画する範囲を設定
+	// カメラの注視点を中心にする
+	float length = 1000.0f;
+	Vector4 minPos = _tpsCamera->GetLookAt() - Vector4(length, length, length);
+	Vector4 maxPos = _tpsCamera->GetLookAt() + Vector4(length, length, length);
+	SetShadowMapDrawArea(_shadowMapHandle, ToDX(minPos), ToDX(maxPos));
+
+	// 2回まわして、path=0:シャドウマップへの描画, path=1:モデルの描画
+	for (int path = 0; path < 2; path++)
 	{
-		// ルートツリーの描画
-		_sceneRoot->Render();
+		if (path == 0)
+		{
+			// シャドウマップへの描画の準備
+			ShadowMap_DrawSetup(_shadowMapHandle);
+
+			if (_sceneRoot)
+			{
+				// ルートツリーの描画
+				_sceneRoot->Render();
+			}
+		}
+		else if (path == 1)
+		{
+			// シャドウマップへの描画を終了
+			ShadowMap_DrawEnd();
+			// 描画に使用するシャドウマップを設定
+			SetUseShadowMap(0, _shadowMapHandle);
+
+			if (_sceneRoot)
+			{
+				// ルートツリーの描画
+				_sceneRoot->Render();
+			}
+		}
 	}
+
+	// 描画に使用するシャドウマップの設定を解除
+	SetUseShadowMap(0, -1);
+
+	//----------------------------------------------------------------------------
+
+	//CollisionManager::GetInstance().Render();
 
 	// UIの描画
 	SetUseZBuffer3D(FALSE);// Zバッファを無効にする

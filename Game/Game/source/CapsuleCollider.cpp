@@ -30,12 +30,27 @@ void CapsuleCollider::Initialize()
 	CollisionManager::GetInstance().Register(this);
 }
 
-void CapsuleCollider::OnCollision(GameObject* other)
+void CapsuleCollider::OnCollisionEnter(GameObject* other)
 {
-	// オーナーのOnCollisionを呼び出す
 	if (_owner)
 	{
-		_owner->OnCollision(other);
+		_owner->OnCollisionEnter(other);
+	}
+}
+
+void CapsuleCollider::OnCollisionStay(GameObject* other)
+{
+	if (_owner)
+	{
+		_owner->OnCollisionStay(other);
+	}
+}
+
+void CapsuleCollider::OnCollisionExit(GameObject* other)
+{
+	if (_owner)
+	{
+		_owner->OnCollisionExit(other);
 	}
 }
 

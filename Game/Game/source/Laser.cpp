@@ -33,6 +33,12 @@ void Laser::Initialize()
 	{
 		_collider->SetCapsuleRadius(_capsuleRadius);
 		_collider->SetCapsuleSegment(_capsuleStart, _capsuleEnd);
+
+		// 非アクティブ中は当たり判定から外す
+		if (_isSleeping)
+		{
+			CollisionManager::GetInstance().Unregister(_collider);
+		}
 	}
 }
 
@@ -59,7 +65,7 @@ void Laser::Render()
 	float flicker = (std::sin(time * flickerSpeed) + 1.0f) * 0.5f;
 
 	int outAlpha = 220 + static_cast<int>(flicker * 10);// アルファ値を点滅させる
-	SetDrawBlendMode(DX_BLENDMODE_ADD, outAlpha);// 加算合成で半透明にする
+	//SetDrawBlendMode(DX_BLENDMODE_ADD, outAlpha);// 加算合成で半透明にする
 
 	// 外側のオーラを描画
 	unsigned int outColor = GetColor(255, 0, 0);// 赤色
@@ -67,7 +73,7 @@ void Laser::Render()
 
 	//int inAlpha = 240 + static_cast<int>(flicker * 15);// 明るめの値
 	//SetDrawBlendMode(DX_BLENDMODE_ALPHA, inAlpha);// 加算合成で発光させる
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);// ブレンドモードを元に戻す
+	//SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);// ブレンドモードを元に戻す
 
 	// 内側のコアを描画
 	unsigned int inColor = GetColor(255, 69, 0);// 白色

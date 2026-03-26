@@ -67,8 +67,12 @@ public:
 	virtual ICapsuleCollider* AsCapsuleCollider() { return nullptr; }
 	virtual const ICapsuleCollider* AsCapsuleCollider() const { return nullptr; }
 
-	// “–‚½‚Á‚½‚ÉŒÄ‚Î‚ê‚éŠÖ”
-	virtual void OnCollision(GameObject* other) = 0;
+	// “–‚½‚Á‚½uŠÔ‚ÉŒÄ‚Î‚ê‚é
+	virtual void OnCollisionEnter(GameObject* other) {}
+	// “–‚½‚Á‚Ä‚¢‚éŠÔŒÄ‚Î‚ê‚é
+	virtual void OnCollisionStay(GameObject* other) {}
+	// —£‚ê‚½uŠÔ‚ÉŒÄ‚Î‚ê‚é
+	virtual void OnCollisionExit(GameObject* other) {}
 
 	// ©g‚ğGameObject‚Æ‚µ‚Ä•Ô‚·
 	virtual GameObject* GetOwner() = 0;

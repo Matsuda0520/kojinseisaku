@@ -12,6 +12,9 @@ void CollisionManager::Process()
 	size_t count = _colliders.size();
 	if (count < 2) { return; }// 判定対象が2つ未満なら処理しない
 
+	// このフレームの衝突ペア
+	std::set<std::pair<ICollider*, ICollider*>> currentHits;
+
 	// 全ペアの当たり判定をチェックする
 	for (size_t i = 0; i < count - 1; ++i)
 	{
@@ -33,7 +36,74 @@ void CollisionManager::Process()
 			if (!CanCollide(colA->GetLayer(), colB->GetLayer())) { continue; }
 
 			// 衝突判定
-			CheckCollision(colA, colB);
+			if (CheckCollision(colA, colB))
+			{
+				// アドレスが小さいほうをfirst、大きいほうをsecondにして
+				ICollider* first = std::min(colA, colB);
+				ICollider* second = std::max(colA, colB);
+				// このペアをセットに追加する
+				currentHits.insert({ first, second });
+			}
+		}
+	}
+
+	// 状態の比較とイベントの呼び出し
+	for (const auto& hitPair : currentHits)
+	{
+		if (_prevHits.find(hitPair) == _prevHits.end())
+		{
+			// 前フレームは無くて、今フレームはある場合は当たった瞬間
+			hitPair.first->OnCollisionEnter(hitPair.second->GetOwner());
+			hitPair.second->OnCollisionEnter(hitPair.first->GetOwner());
+		}
+		else
+		{
+			// 前フレームも、今フレームもある場合は当たっている間
+			hitPair.first->OnCollisionStay(hitPair.second->GetOwner());
+			hitPair.second->OnCollisionStay(hitPair.first->GetOwner());
+		}
+	}
+
+	for (const auto& hitPair : _prevHits)
+	{
+		if (currentHits.find(hitPair) == currentHits.end())
+		{
+			// 前フレームはあって、今フレームはない場合は離れた瞬間
+			hitPair.first->OnCollisionExit(hitPair.second->GetOwner());
+			hitPair.second->OnCollisionExit(hitPair.first->GetOwner());
+		}
+	}
+
+	// 履歴を更新
+	_prevHits = currentHits;
+}
+
+void CollisionManager::Render()
+{
+	// デバッグ用にコライダーを描画
+	unsigned int color = GetColor(0, 255, 0);
+
+	for (ICollider* col : _colliders)
+	{
+		// 死亡しているオーナーのコライダーは描画しない
+		GameObject* owner = col->GetOwner();
+		if (!owner || owner->IsDead()) { continue; }
+
+		CollisionShape shape = col->GetShapeType();
+
+		if (shape == CollisionShape::Capsule)
+		{
+			// カプセルの描画
+			auto cap = col->AsCapsuleCollider();
+			if (cap)
+			{
+				DrawCapsule3D(
+					ToDX(cap->GetCapsuleStart()),
+					ToDX(cap->GetCapsuleEnd()),
+					cap->GetCapsuleRadius(),
+					12, color, color, FALSE
+				);
+			}
 		}
 	}
 }
@@ -62,9 +132,22 @@ void CollisionManager::Unregister(ICollider* collider)
 		std::remove(_colliders.begin(), _colliders.end(), collider),
 		_colliders.end()
 	);
+
+	// 履歴から解除するコライダーを含むペアを削除する
+	for (auto it = _prevHits.begin(); it != _prevHits.end();)
+	{
+		if (it->first == collider || it->second == collider)
+		{
+			it = _prevHits.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
 }
 
-void CollisionManager::CheckCollision(ICollider* a, ICollider* b)
+bool CollisionManager::CheckCollision(ICollider* a, ICollider* b)
 {
 	// 当たり判定
 	bool isHit = false;
@@ -81,7 +164,7 @@ void CollisionManager::CheckCollision(ICollider* a, ICollider* b)
 		if(capA && capB)
 		{
 			// まず、大まかな判定で当たっていなければ処理しない
-			if(!CheckCapsuleCapsuleRough(capA, capB)) { return; }
+			if (!CheckCapsuleCapsuleRough(capA, capB)) { return false; }
 			// カプセル同士の詳細な判定
 			isHit = CheckCapsuleCapsule(capA, capB);
 		}
@@ -89,11 +172,7 @@ void CollisionManager::CheckCollision(ICollider* a, ICollider* b)
 
 	// 球同士の判定
 
-	if (isHit)
-	{
-		a->OnCollision(b->GetOwner());
-		b->OnCollision(a->GetOwner());
-	}
+	return isHit;
 }
 
 bool CollisionManager::CanCollide(CollisionLayer a, CollisionLayer b) const
