@@ -4,6 +4,7 @@
 #include "NormalLaser.h"
 #include "MovingLaser.h"
 #include "RotatingLaser.h"
+#include "Player.h"
 
 namespace
 {
@@ -16,6 +17,7 @@ namespace
 	constexpr int LASER_POOL_SIZE = 10;// レーザーの総数
 	constexpr float LASER_RADIUS = 20.0f;// レーザーの半径
 	constexpr float LASER_SPAWN_INTERVAL = 120.0f;// 再配置間隔(フレーム)
+	constexpr float MIN_LASER_SPAWN_INTERVAL = 30.0f;// 最短間隔
 	constexpr float LASER_DELETE_DISTANCE = 100.0f;// レーザー再配置用
 }
 
@@ -66,8 +68,25 @@ void StageSpawner::Process()
 		// レーザーのタイマー再配置
 		_laserSpawnTimer += 1.0f;
 
+		// プレイヤー速度に応じてスポーン間隔を動的に調整
+		float currentSpawnInterval = LASER_SPAWN_INTERVAL;
+		if (Player* player = _target->AsPlayer())
+		{
+			float speedMultiplier = player->GetSpeedMultiplier();
+			if (speedMultiplier < 1.0f)
+			{
+				speedMultiplier = 1.0f;
+			}
+
+			currentSpawnInterval = LASER_SPAWN_INTERVAL / speedMultiplier;
+			if (currentSpawnInterval < MIN_LASER_SPAWN_INTERVAL)
+			{
+				currentSpawnInterval = MIN_LASER_SPAWN_INTERVAL;
+			}
+		}
+
 		// 再配置間隔に達したらレーザーを配置する
-		if (_laserSpawnTimer >= LASER_SPAWN_INTERVAL)
+		if (_laserSpawnTimer >= currentSpawnInterval)
 		{
 			_laserSpawnTimer = 0.0f;
 

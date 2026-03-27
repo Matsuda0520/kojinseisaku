@@ -35,14 +35,14 @@ void ActionMap::InitializeDefaultBindings()
 
 	// ローリング
 	Bind(InputAction::Roll, ActionBinding()
-		.AddKey(KEY_INPUT_LSHIFT)
+		//.AddKey(KEY_INPUT_LSHIFT)
 		.AddPad(PAD_INPUT_2)
 	);
 
 	// スタート(タイトル)
 	Bind(InputAction::Start, ActionBinding()
 		.AddKey(KEY_INPUT_RETURN)
-		.AddPad(PAD_INPUT_9)
+		.AddPad(PAD_INPUT_4)
 	);
 }
 

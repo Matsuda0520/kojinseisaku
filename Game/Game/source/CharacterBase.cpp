@@ -70,7 +70,7 @@ void CharacterBase::Render()
 	}
 
 	// test
-	DrawSphere3D(ToDX(_pos), 10.0f, 16, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
+	//DrawSphere3D(ToDX(_pos), 10.0f, 16, GetColor(255, 0, 0), GetColor(255, 255, 255), TRUE);
 
 	// q‚ÌRender‚ğŒÄ‚Ño‚·
 	GameComposite::Render();

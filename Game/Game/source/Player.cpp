@@ -63,7 +63,7 @@ void Player::Process()
 
 	if (_isSpeedUpActive)
 	{
-		if (_speedMultiplier < 2.5f)
+		if (_speedMultiplier < 10.0f)
 		{
 			_speedMultiplier += 0.0005f;
 		}

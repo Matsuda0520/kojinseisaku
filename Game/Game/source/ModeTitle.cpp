@@ -27,7 +27,7 @@ bool ModeTitle::Render()
 	const int screenH = 1080;
 
 	const char* titleText = "Dodge Laser";
-	const char* guideText = "Press Enter To Start";
+	const char* guideText = "Press Y Button To Start";
 
 	// ƒ^ƒCƒgƒ‹
 	SetFontSize(96);

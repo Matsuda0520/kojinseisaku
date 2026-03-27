@@ -43,7 +43,7 @@ bool ModeGameOver::Render()
 	const int screenH = 1080;
 
 	const char* gameOverText = "Game Over";
-	const char* guideText = "Press Enter To Title";
+	const char* guideText = "Press Y Button To Title";
 
 	// ƒ^ƒCƒgƒ‹
 	SetFontSize(96);

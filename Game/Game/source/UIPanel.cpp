@@ -41,6 +41,32 @@ void UIPanel::Render()
 	{
 		child->Render();
 	}
+
+	// âºé¿ëï: âEâ∫Ç…ëÄçÏÉKÉCÉhÇï`âÊ
+	const char* jumpText = "A Button : Jump";
+	const char* rollText = "B Button : Roll";
+
+	const int marginRight = 24;
+	const int marginBottom = 24;
+	const int lineHeight = 28;
+	const int lineSpacing = 34;
+
+	SetFontSize(28);
+
+	const int panelRight = gx + static_cast<int>(_width);
+	const int panelBottom = gy + static_cast<int>(_height);
+
+	const int jumpW = GetDrawStringWidth(jumpText, -1);
+	const int rollW = GetDrawStringWidth(rollText, -1);
+
+	const int jumpX = panelRight - marginRight - jumpW;
+	const int rollX = panelRight - marginRight - rollW;
+
+	const int rollY = panelBottom - marginBottom - lineHeight;
+	const int jumpY = rollY - lineSpacing;
+
+	DrawString(jumpX, jumpY, jumpText, GetColor(255, 255, 255));
+	DrawString(rollX, rollY, rollText, GetColor(255, 255, 255));
 }
 
 void UIPanel::AddChild(std::unique_ptr<UIElement> child)

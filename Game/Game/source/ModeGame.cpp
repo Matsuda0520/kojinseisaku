@@ -179,7 +179,7 @@ bool ModeGame::Process()
 		}
 
 		// 毎フレーム10点*スピード倍率
-		_scoreAccumulator += 10.0f * speedMultiplier;
+		_scoreAccumulator += 1.0f * speedMultiplier;
 
 		// 浮動小数点で蓄積し、1以上になったら整数スコアに反映
 		if (_scoreAccumulator >= 1.0f)
