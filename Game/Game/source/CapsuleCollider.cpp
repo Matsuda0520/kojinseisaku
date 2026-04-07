@@ -1,11 +1,10 @@
 #include "CapsuleCollider.h"
 #include "CollisionManager.h"
+#include "GameObject.h"
 
-CapsuleCollider::CapsuleCollider(const char* name, CollisionLayer layer, float radius, GameObject* owner)
-	: GameLeaf(name)
-	, _layer(layer)
+CapsuleCollider::CapsuleCollider(CollisionLayer layer, float radius)
+	: ColliderComponent(layer, CollisionShape::Capsule)
 	, _radius(radius)
-	, _owner(owner)
 	, _segmentStart()
 	, _segmentEnd()
 {
@@ -13,50 +12,41 @@ CapsuleCollider::CapsuleCollider(const char* name, CollisionLayer layer, float r
 
 CapsuleCollider::~CapsuleCollider()
 {
-	// 破棄されるときにCollisionManagerから解除する
 	CollisionManager::GetInstance().Unregister(this);
 }
 
 void CapsuleCollider::Initialize()
 {
-	// オーナー位置を設定しておく
-	if (_owner)
+	// オーナーの位置を取得
+	if (GameObject* owner = GetOwner())
 	{
-		_segmentStart = _owner->GetPosition();
-		_segmentEnd = _owner->GetPosition();
+		_segmentStart = owner->GetPosition();
+		_segmentEnd = owner->GetPosition();
 	}
 
-	// CollisionManagerに登録する
 	CollisionManager::GetInstance().Register(this);
 }
 
 void CapsuleCollider::OnCollisionEnter(GameObject* other)
 {
-	if (_owner)
+	if (GameObject* owner = GetOwner())
 	{
-		_owner->OnCollisionEnter(other);
+		owner->OnCollisionEnter(other);
 	}
 }
 
 void CapsuleCollider::OnCollisionStay(GameObject* other)
 {
-	if (_owner)
+	if(GameObject* owner = GetOwner())
 	{
-		_owner->OnCollisionStay(other);
+		owner->OnCollisionStay(other);
 	}
 }
 
 void CapsuleCollider::OnCollisionExit(GameObject* other)
 {
-	if (_owner)
+	if(GameObject* owner = GetOwner())
 	{
-		_owner->OnCollisionExit(other);
+		owner->OnCollisionExit(other);
 	}
-}
-
-void CapsuleCollider::SetCapsuleSegment(const Vector4& start, const Vector4& end)
-{
-	// カプセル軸を更新
-	_segmentStart = start;
-	_segmentEnd = end;
 }

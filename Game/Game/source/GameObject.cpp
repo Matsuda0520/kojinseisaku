@@ -4,17 +4,44 @@ GameObject::GameObject(const char* name)
 	: _name(name)
 	, _isDead(false)
 	, _parent(nullptr)
-	, _pos(0.0f, 0.0f, 0.0f)
-	, _rot(0.0f, 0.0f, 0.0f)
+	, _position(0.0f, 0.0f, 0.0f)
+	, _rotation(0.0f, 0.0f, 0.0f)
 	, _scale(1.0f, 1.0f, 1.0f)
 {
 }
 
-void GameObject::Destroy()
+void GameObject::Initialize()
 {
-	// €–Sƒtƒ‰ƒO‚ğ—§‚Ä‚é
-	if (!_isDead)
+	for (auto& component : _components)
 	{
-		_isDead = true;
+		component->Initialize();
+	}
+}
+
+void GameObject::Terminate()
+{
+	for (auto& component : _components)
+	{
+		component->Terminate();
+	}
+}
+
+void GameObject::Process()
+{
+	if (_isDead) { return; }
+
+	for (auto& component : _components)
+	{
+		component->Process();
+	}
+}
+
+void GameObject::Render()
+{
+	if (_isDead) { return; }
+
+	for (auto& component : _components)
+	{
+		component->Render();
 	}
 }

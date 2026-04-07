@@ -1,9 +1,8 @@
 #pragma once
-#include "GameObject.h"
-#include "ICollider.h"
+#include "appframe.h"
+#include "ColliderComponent.h"
 
-// 全オブジェクトの当たり判定を管理するマネージャー
-class CollisionManager : public GameObject
+class CollisionManager
 {
 public:
 	// シングルトンインスタンの取得
@@ -16,41 +15,37 @@ public:
 	CollisionManager(const CollisionManager&) = delete;
 	CollisionManager& operator=(const CollisionManager&) = delete;
 
-	void Initialize() override {}
-	void Process() override;
-	void Render() override;
-	void Terminate() override;
+	void Initialize() {}
+	void Terminate() {}
+	void Process();
+	void Render();
 
-	// コライダーの生ポインタで登録・解除を受け付ける
-	void Register(ICollider* collider);
-	void Unregister(ICollider* collider);
+	void Register(ColliderComponent* collider);
+	void Unregister(ColliderComponent* collider);
 
 private:
-	CollisionManager(const char* name = "CollisionManager");
-	~CollisionManager() override = default;
+	CollisionManager() = default;
+	~CollisionManager() = default;
 
 	// 2つのコライダーに対して当たり判定を行う
-	bool CheckCollision(ICollider* a, ICollider* b);
+	bool CheckCollision(ColliderComponent* a, ColliderComponent* b);
 
 	// レイヤーの組み合わせが有効なペアかチェックする
 	bool CanCollide(CollisionLayer a, CollisionLayer b) const;
 
-	// 球と球の当たり判定
-	bool CheckSphereSphere(const ISphereCollider* a, const ISphereCollider* b) const;
-
 	// カプセルとカプセルの当たり判定
-	bool CheckCapsuleCapsule(const ICapsuleCollider* a, const ICapsuleCollider* b) const;
+	bool CheckCapsuleCapsule(const ColliderComponent* a, const ColliderComponent* b) const;
 
 	// カプセル同士の判定前の大まかな判定(球でチェック)
-	bool CheckCapsuleCapsuleRough(const ICapsuleCollider* a, const ICapsuleCollider* b) const;
+	bool CheckCapsuleCapsuleRough(const ColliderComponent* a, const ColliderComponent* b) const;
 
 	// カプセルを内包する球を計算する
-	void CalcCapsuleRoughSphere(const ICapsuleCollider* capsule, VECTOR& outCenter, float& outRadius) const;
+	void CalcCapsuleRoughSphere(const ColliderComponent* capsule, VECTOR& outCenter, float& outRadius) const;
 
-	std::vector<ICollider*> _colliders;// コライダーの生ポインタを保持するリスト
+	std::vector<ColliderComponent*> _colliders;
 
 	// 前フレームの衝突を記録するセット
-	std::set<std::pair<ICollider*, ICollider*>> _prevHits;
+	std::set<std::pair<ColliderComponent*, ColliderComponent*>> _prevHits;
 
 	static constexpr std::array s_collisonPairs =
 	{

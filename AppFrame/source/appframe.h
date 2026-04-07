@@ -13,6 +13,7 @@
 #include <utility>
 #include <deque>
 #include <set>
+#include <type_traits>
 
 #include "DxLib.h"
 #include "Application/ApplicationBase.h"

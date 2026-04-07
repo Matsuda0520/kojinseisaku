@@ -166,6 +166,7 @@
     <ClCompile Include="source\CameraManager.cpp" />
     <ClCompile Include="source\CapsuleCollider.cpp" />
     <ClCompile Include="source\CharacterBase.cpp" />
+    <ClCompile Include="source\ColliderComponent.cpp" />
     <ClCompile Include="source\CollisionManager.cpp" />
     <ClCompile Include="source\Floor.cpp" />
     <ClCompile Include="source\GameComposite.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="source\CameraManager.h" />
     <ClInclude Include="source\CapsuleCollider.h" />
     <ClInclude Include="source\CharacterBase.h" />
+    <ClInclude Include="source\ColliderComponent.h" />
     <ClInclude Include="source\CollisionManager.h" />
     <ClInclude Include="source\Floor.h" />
     <ClInclude Include="source\GameComposite.h" />

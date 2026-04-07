@@ -7,10 +7,11 @@ class GameLeaf : public GameObject
 public:
 	GameLeaf(const char* name) : GameObject(name) {}
 
-	void Initialize() override {}
-	void Process() override;
-	void Render() override;
-	void Terminate() override {}
+	// Leafは、自身のコンポーネントの処理を呼ぶだけ
+	void Initialize() override { GameObject::Initialize(); }
+	void Terminate() override { GameObject::Terminate(); }
+	void Process() override { GameObject::Process(); }
+	void Render() override { GameObject::Render(); }
 
 };
 

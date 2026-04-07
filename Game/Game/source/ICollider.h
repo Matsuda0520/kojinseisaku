@@ -3,7 +3,7 @@
 
 class GameObject;
 
-// 当たり判定のグループを定義
+// 当たり判定のグループ
 enum class CollisionLayer
 {
 	Player,

@@ -1,36 +1,21 @@
 #include "CollisionManager.h"
 
-CollisionManager::CollisionManager(const char* name)
-	: GameObject(name)
-{
-}
-
 void CollisionManager::Process()
 {
-	if (_isDead) { return; }
-
 	size_t count = _colliders.size();
 	if (count < 2) { return; }// 判定対象が2つ未満なら処理しない
 
 	// このフレームの衝突ペア
-	std::set<std::pair<ICollider*, ICollider*>> currentHits;
+	std::set<std::pair<ColliderComponent*, ColliderComponent*>> currentHits;
 
 	// 全ペアの当たり判定をチェックする
 	for (size_t i = 0; i < count - 1; ++i)
 	{
-		ICollider* colA = _colliders[i];
-		GameObject* ownerA = colA->GetOwner();
-
-		// オーナーが死亡フラグを立てていたら判定をスキップ
-		if (!ownerA || ownerA->IsDead()) { continue; }
+		ColliderComponent* colA = _colliders[i];
 
 		for(size_t j = i + 1; j < count; ++j)
 		{
-			ICollider* colB = _colliders[j];
-			GameObject* ownerB = colB->GetOwner();
-
-			// オーナーがいない、死亡している、同じオーナー同士ならスキップ
-			if (!ownerB || ownerB->IsDead() || ownerA == ownerB) { continue; }
+			ColliderComponent* colB = _colliders[j];
 
 			// 衝突するレイヤーの組み合わせかチェック
 			if (!CanCollide(colA->GetLayer(), colB->GetLayer())) { continue; }
@@ -39,8 +24,8 @@ void CollisionManager::Process()
 			if (CheckCollision(colA, colB))
 			{
 				// アドレスが小さいほうをfirst、大きいほうをsecondにして
-				ICollider* first = std::min(colA, colB);
-				ICollider* second = std::max(colA, colB);
+				ColliderComponent* first = std::min(colA, colB);
+				ColliderComponent* second = std::max(colA, colB);
 				// このペアをセットに追加する
 				currentHits.insert({ first, second });
 			}
@@ -80,32 +65,6 @@ void CollisionManager::Process()
 
 void CollisionManager::Render()
 {
-	// デバッグ用にコライダーを描画
-	unsigned int color = GetColor(0, 255, 0);
-
-	for (ICollider* col : _colliders)
-	{
-		// 死亡しているオーナーのコライダーは描画しない
-		GameObject* owner = col->GetOwner();
-		if (!owner || owner->IsDead()) { continue; }
-
-		CollisionShape shape = col->GetShapeType();
-
-		if (shape == CollisionShape::Capsule)
-		{
-			// カプセルの描画
-			auto cap = col->AsCapsuleCollider();
-			if (cap)
-			{
-				DrawCapsule3D(
-					ToDX(cap->GetCapsuleStart()),
-					ToDX(cap->GetCapsuleEnd()),
-					cap->GetCapsuleRadius(),
-					12, color, color, FALSE
-				);
-			}
-		}
-	}
 }
 
 void CollisionManager::Terminate()
@@ -113,7 +72,7 @@ void CollisionManager::Terminate()
 	_colliders.clear();
 }
 
-void CollisionManager::Register(ICollider* collider)
+void CollisionManager::Register(ColliderComponent* collider)
 {
 	if (!collider) { return; }
 
@@ -124,7 +83,7 @@ void CollisionManager::Register(ICollider* collider)
 	}
 }
 
-void CollisionManager::Unregister(ICollider* collider)
+void CollisionManager::Unregister(ColliderComponent* collider)
 {
 	if (!collider) { return; }
 
@@ -147,13 +106,13 @@ void CollisionManager::Unregister(ICollider* collider)
 	}
 }
 
-bool CollisionManager::CheckCollision(ICollider* a, ICollider* b)
+bool CollisionManager::CheckCollision(ColliderComponent* a, ColliderComponent* b)
 {
 	// 当たり判定
 	bool isHit = false;
 
-	CollisionShape shapeA = a->GetShapeType();
-	CollisionShape shapeB = b->GetShapeType();
+	CollisionShape shapeA = a->GetShape();
+	CollisionShape shapeB = b->GetShape();
 
 	// カプセル同士の判定
 	if (shapeA == CollisionShape::Capsule && shapeB == CollisionShape::Capsule)
@@ -190,44 +149,15 @@ bool CollisionManager::CanCollide(CollisionLayer a, CollisionLayer b) const
 	return false;
 }
 
-bool CollisionManager::CheckSphereSphere(const ISphereCollider* a, const ISphereCollider* b) const
+bool CollisionManager::CheckCapsuleCapsule(const ColliderComponent* a, const ColliderComponent* b) const
 {
-	// 中心間距離と半径の和を比較して当たり判定
-	return HitCheck_Sphere_Sphere(
-		ToDX(a->GetSphereCenter()),
-		a->GetSphereRadius(),
-		ToDX(b->GetSphereCenter()),
-		b->GetSphereRadius()) != 0;
 }
 
-bool CollisionManager::CheckCapsuleCapsule(const ICapsuleCollider* a, const ICapsuleCollider* b) const
+bool CollisionManager::CheckCapsuleCapsuleRough(const ColliderComponent* a, const ColliderComponent* b) const
 {
-	// 2本の線分と半径を比較して当たり判定
-	return HitCheck_Capsule_Capsule(
-		ToDX(a->GetCapsuleStart()),
-		ToDX(a->GetCapsuleEnd()),
-		a->GetCapsuleRadius(),
-		ToDX(b->GetCapsuleStart()),
-		ToDX(b->GetCapsuleEnd()),
-		b->GetCapsuleRadius()) != 0;
 }
 
-bool CollisionManager::CheckCapsuleCapsuleRough(const ICapsuleCollider* a, const ICapsuleCollider* b) const
-{
-	// カプセルを内包する球で大まかに当たり判定
-	VECTOR centerA, centerB;
-	float radiusA, radiusB;
-
-	// カプセルを内包する球を計算
-	CalcCapsuleRoughSphere(a, centerA, radiusA);
-	CalcCapsuleRoughSphere(b, centerB, radiusB);
-
-	return HitCheck_Sphere_Sphere(
-		centerA, radiusA,
-		centerB, radiusB) != 0;
-}
-
-void CollisionManager::CalcCapsuleRoughSphere(const ICapsuleCollider* capsule, VECTOR& outCenter, float& outRadius) const
+void CollisionManager::CalcCapsuleRoughSphere(const ColliderComponent* capsule, VECTOR& outCenter, float& outRadius) const
 {
 	// カプセルの中心と半径を計算する
 	Vector4 start = capsule->GetCapsuleStart();

@@ -2,7 +2,8 @@
 
 void GameComposite::Initialize()
 {
-	if (_isDead) { return; }
+	// まず自身のコンポーネントを処理する
+	GameObject::Initialize();
 
 	// 追加予約された子をコンテナに移す
 	for (auto& newChild : _pendingChildren)
@@ -18,14 +19,34 @@ void GameComposite::Initialize()
 	}
 }
 
+void GameComposite::Terminate()
+{
+	GameObject::Terminate();
+
+	// 子のTerminateを呼び出す
+	for (auto& child : _children)
+	{
+		child->Terminate();
+	}
+
+	// 追加予約の子のTerminateも呼び出す
+	for (auto& pendingChild : _pendingChildren)
+	{
+		pendingChild->Terminate();
+	}
+}
+
 void GameComposite::Process()
 {
 	if (_isDead) { return; }
 
+	GameObject::Process();
+
 	// 追加予約された子をコンテナに移す
 	for (auto& newChild : _pendingChildren)
 	{
-		newChild->Initialize();// 追加された子は初期化してから追加する
+		// 初期化してから追加する
+		newChild->Initialize();
 		_children.push_back(std::move(newChild));
 	}
 	_pendingChildren.clear();
@@ -50,36 +71,13 @@ void GameComposite::Render()
 {
 	if (_isDead) { return; }
 
+	GameObject::Render();
+
 	// 子のRenderを呼び出す
 	for (auto& child : _children)
 	{
 		child->Render();
 	}
-}
-
-void GameComposite::Terminate()
-{
-	if (_isDead) { return; }
-
-	// 子のTerminateを呼び出す
-	for (auto& child : _children)
-	{
-		child->Terminate();
-	}
-	for (auto& pendingChild : _pendingChildren)
-	{
-		pendingChild->Terminate();
-	}
-}
-
-void GameComposite::Destroy()
-{
-	// 自身を死亡状態にする
-	GameObject::Destroy();
-
-	// 子もまとめて死亡状態にする
-	for (auto& child : _children) { child->Destroy(); }
-	for (auto& pendingChild : _pendingChildren) { pendingChild->Destroy(); }
 }
 
 void GameComposite::AddChild(std::unique_ptr<GameObject> child)
