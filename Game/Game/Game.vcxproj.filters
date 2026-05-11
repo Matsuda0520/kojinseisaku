@@ -64,14 +64,17 @@
     <Filter Include="ヘッダー ファイル\Camera">
       <UniqueIdentifier>{05b92f66-d38a-4ced-a257-0d2f2809dc75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\Interface">
-      <UniqueIdentifier>{9c10a1ca-781c-4df0-9238-33e3ac0b5ba9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\stage">
       <UniqueIdentifier>{bccd6560-59ba-4595-9c46-2d2509daa7b6}</UniqueIdentifier>
     </Filter>
     <Filter Include="ヘッダー ファイル\stage">
       <UniqueIdentifier>{ca6a2000-e7b1-4af9-833f-0d70c0cfb433}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Collider">
+      <UniqueIdentifier>{d2351add-0740-4042-b892-158d8eca93ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Collider">
+      <UniqueIdentifier>{bcfbc7b3-866f-4583-93c7-aae2e286967d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -111,9 +114,6 @@
     <ClCompile Include="source\CharacterBase.cpp">
       <Filter>ソース ファイル\Character</Filter>
     </ClCompile>
-    <ClCompile Include="source\UISlider.cpp">
-      <Filter>ソース ファイル\UI</Filter>
-    </ClCompile>
     <ClCompile Include="source\Spawner.cpp">
       <Filter>ソース ファイル\Factory</Filter>
     </ClCompile>
@@ -135,26 +135,11 @@
     <ClCompile Include="source\Floor.cpp">
       <Filter>ソース ファイル\stage</Filter>
     </ClCompile>
-    <ClCompile Include="source\Laser.cpp">
-      <Filter>ソース ファイル\stage</Filter>
-    </ClCompile>
-    <ClCompile Include="source\StageSpawner.cpp">
-      <Filter>ソース ファイル\stage</Filter>
-    </ClCompile>
     <ClCompile Include="source\CapsuleCollider.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="source\MovingLaser.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="source\RotatingLaser.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="source\UIHPBar.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Collider</Filter>
     </ClCompile>
     <ClCompile Include="source\ColliderComponent.cpp">
-      <Filter>ソース ファイル</Filter>
+      <Filter>ソース ファイル\Collider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,9 +188,6 @@
     <ClInclude Include="source\CharacterBase.h">
       <Filter>ヘッダー ファイル\Character</Filter>
     </ClInclude>
-    <ClInclude Include="source\UISlider.h">
-      <Filter>ヘッダー ファイル\UI</Filter>
-    </ClInclude>
     <ClInclude Include="source\Spawner.h">
       <Filter>ヘッダー ファイル\Factory</Filter>
     </ClInclude>
@@ -218,12 +200,6 @@
     <ClInclude Include="source\CameraBase.h">
       <Filter>ヘッダー ファイル\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="source\IAttacker.h">
-      <Filter>ヘッダー ファイル\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="source\ICollider.h">
-      <Filter>ヘッダー ファイル\Interface</Filter>
-    </ClInclude>
     <ClInclude Include="source\LightManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -233,32 +209,14 @@
     <ClInclude Include="source\Floor.h">
       <Filter>ヘッダー ファイル\stage</Filter>
     </ClInclude>
-    <ClInclude Include="source\Laser.h">
-      <Filter>ヘッダー ファイル\stage</Filter>
-    </ClInclude>
-    <ClInclude Include="source\StageSpawner.h">
-      <Filter>ヘッダー ファイル\stage</Filter>
-    </ClInclude>
     <ClInclude Include="source\CapsuleCollider.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="source\NormalLaser.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="source\MovingLaser.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="source\RotatingLaser.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="source\UIHPBar.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="source\IHPObserver.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Collider</Filter>
     </ClInclude>
     <ClInclude Include="source\ColliderComponent.h">
-      <Filter>ヘッダー ファイル</Filter>
+      <Filter>ヘッダー ファイル\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="source\IHPObserver.h">
+      <Filter>ヘッダー ファイル\Observer</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

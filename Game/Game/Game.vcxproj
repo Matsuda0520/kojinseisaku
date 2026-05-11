@@ -172,20 +172,14 @@
     <ClCompile Include="source\GameComposite.cpp" />
     <ClCompile Include="source\GameLeaf.cpp" />
     <ClCompile Include="source\GameObject.cpp" />
-    <ClCompile Include="source\Laser.cpp" />
     <ClCompile Include="source\LightManager.cpp" />
     <ClCompile Include="source\ModeGame.cpp" />
-    <ClCompile Include="source\MovingLaser.cpp" />
     <ClCompile Include="source\Player.cpp" />
     <ClCompile Include="source\PlayerState.cpp" />
-    <ClCompile Include="source\RotatingLaser.cpp" />
     <ClCompile Include="source\Spawner.cpp" />
-    <ClCompile Include="source\StageSpawner.cpp" />
     <ClCompile Include="source\TPSCamera.cpp" />
     <ClCompile Include="source\UIElement.cpp" />
     <ClCompile Include="source\UIPanel.cpp" />
-    <ClCompile Include="source\UIHPBar.cpp" />
-    <ClCompile Include="source\UISlider.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\ActionMap.h" />
@@ -202,26 +196,17 @@
     <ClInclude Include="source\GameLeaf.h" />
     <ClInclude Include="source\GameObject.h" />
     <ClInclude Include="source\GameObjectFactory.h" />
-    <ClInclude Include="source\IAttacker.h" />
-    <ClInclude Include="source\ICollider.h" />
     <ClInclude Include="source\IHPObserver.h" />
     <ClInclude Include="source\IPlayerObserver.h" />
     <ClInclude Include="source\IUIObserver.h" />
-    <ClInclude Include="source\Laser.h" />
     <ClInclude Include="source\LightManager.h" />
     <ClInclude Include="source\ModeGame.h" />
-    <ClInclude Include="source\MovingLaser.h" />
-    <ClInclude Include="source\NormalLaser.h" />
     <ClInclude Include="source\Player.h" />
     <ClInclude Include="source\PlayerState.h" />
-    <ClInclude Include="source\RotatingLaser.h" />
     <ClInclude Include="source\Spawner.h" />
-    <ClInclude Include="source\StageSpawner.h" />
     <ClInclude Include="source\TPSCamera.h" />
     <ClInclude Include="source\UIElement.h" />
     <ClInclude Include="source\UIPanel.h" />
-    <ClInclude Include="source\UIHPBar.h" />
-    <ClInclude Include="source\UISlider.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
