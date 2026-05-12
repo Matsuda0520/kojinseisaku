@@ -1,5 +1,4 @@
 #pragma once
-#include "appframe.h"
 #include "Component.h"
 
 // ゲームオブジェクトの基底クラス

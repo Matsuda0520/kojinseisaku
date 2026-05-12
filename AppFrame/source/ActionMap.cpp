@@ -40,6 +40,7 @@ void ActionMap::InitializeDefaultBindings()
 	);
 }
 
+// 入力がホールド状態か判定
 bool ActionMap::IsHold(InputAction action)
 {
 	auto it = _bindings.find(action);
@@ -69,6 +70,7 @@ bool ActionMap::IsHold(InputAction action)
 	return false;
 }
 
+// 入力がトリガー状態か判定
 bool ActionMap::IsTrigger(InputAction action)
 {
 	auto it = _bindings.find(action);
@@ -87,6 +89,7 @@ bool ActionMap::IsTrigger(InputAction action)
 		if (input.IsPadTrg(pad)) { return true; }
 	}
 
+	// 前フレームでは入力されていなくて、今フレームで入力された場合にtrue
 	if (bind.hatUp && input.GetHat().IsUp() && !input.GetHat().WasUp()) { return true; }
 	if (bind.hatRight && input.GetHat().IsRight() && !input.GetHat().WasRight()) { return true; }
 	if (bind.hatDown && input.GetHat().IsDown() && !input.GetHat().WasDown()) { return true; }
@@ -97,6 +100,7 @@ bool ActionMap::IsTrigger(InputAction action)
 	return false;
 }
 
+// 入力がリリース状態か判定
 bool ActionMap::IsRelease(InputAction action)
 {
 	auto it = _bindings.find(action);
@@ -115,6 +119,7 @@ bool ActionMap::IsRelease(InputAction action)
 		if (input.IsPadRel(pad)) { return true; }
 	}
 
+	// 前フレームでは入力されていて、今フレームで入力されていない場合にtrue
 	if (bind.hatUp && !input.GetHat().IsUp() && input.GetHat().WasUp()) { return true; }
 	if (bind.hatRight && !input.GetHat().IsRight() && input.GetHat().WasRight()) { return true; }
 	if (bind.hatDown && !input.GetHat().IsDown() && input.GetHat().WasDown()) { return true; }

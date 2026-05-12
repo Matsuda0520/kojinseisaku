@@ -2,8 +2,6 @@
 #include <unordered_map>
 #include <vector>
 
-#include "appframe.h"
-
 // 入力アクション定義
 enum class InputAction
 {
@@ -12,7 +10,6 @@ enum class InputAction
 	MoveLeft,// 左移動
 	MoveRight,// 右移動
 	Jump,// ジャンプ
-	Roll,// ローリング
 	_EOT_
 };
 
@@ -65,6 +62,7 @@ private:
 	// デフォルトのキーコンフィグを設定
 	void InitializeDefaultBindings();
 
+	// アクションとキーコンフィグのマップ
 	std::unordered_map<InputAction, ActionBinding> _bindings;
 };
 

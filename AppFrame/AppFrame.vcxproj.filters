@@ -66,6 +66,12 @@
     <ClCompile Include="source\input\InputManager.cpp">
       <Filter>input</Filter>
     </ClCompile>
+    <ClCompile Include="source\AnimManager.cpp" />
+    <ClCompile Include="source\ActionMap.cpp" />
+    <ClCompile Include="source\GameComposite.cpp" />
+    <ClCompile Include="source\GameObject.cpp" />
+    <ClCompile Include="source\UIElement.cpp" />
+    <ClCompile Include="source\UIPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\Application\ApplicationBase.h">
@@ -111,5 +117,16 @@
     <ClInclude Include="source\math\mymath.h">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="source\AnimManager.h" />
+    <ClInclude Include="source\ActionMap.h" />
+    <ClInclude Include="source\Component.h" />
+    <ClInclude Include="source\GameComposite.h" />
+    <ClInclude Include="source\GameLeaf.h" />
+    <ClInclude Include="source\GameObject.h" />
+    <ClInclude Include="source\GameObjectFactory.h" />
+    <ClInclude Include="source\UIElement.h" />
+    <ClInclude Include="source\UIPanel.h" />
+    <ClInclude Include="source\ColliderComponent.h" />
+    <ClInclude Include="source\CameraBase.h" />
   </ItemGroup>
 </Project>

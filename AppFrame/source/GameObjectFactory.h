@@ -1,5 +1,4 @@
 #pragma once
-#include "appframe.h"
 #include "GameObject.h"
 
 class GameObjectFactory

@@ -1,5 +1,4 @@
 #pragma once
-#include "appframe.h"
 
 using Math::Vector2;
 

@@ -62,7 +62,7 @@ private:
 	~ResourceServer() { Terminate(); }
 
 	std::vector<ResourceInfo> _loads;// ロード待ちのリソース
-	std::unordered_map<std::string, int> _handleMap;// 検索用マップ(呼び出し名→ハンドル)
+	std::unordered_map<std::string, int> _handleMap;// 検索用マップ(呼び出し名,ハンドル)
 	int _totalCount = 0;// ロード待ちのリソースの総数
 };
 

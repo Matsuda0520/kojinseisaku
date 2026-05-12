@@ -159,10 +159,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\ActionMap.cpp" />
+    <ClCompile Include="source\AnimManager.cpp" />
     <ClCompile Include="source\Application\ApplicationBase.cpp" />
     <ClCompile Include="source\Application\WinMain.cpp" />
     <ClCompile Include="source\CFile\CFile.cpp" />
     <ClCompile Include="source\DxUtil\DxUtility.cpp" />
+    <ClCompile Include="source\GameComposite.cpp" />
+    <ClCompile Include="source\GameObject.cpp" />
     <ClCompile Include="source\input\InputManager.cpp" />
     <ClCompile Include="source\math\Vector2.cpp" />
     <ClCompile Include="source\math\Vector4.cpp" />
@@ -171,14 +175,25 @@
     <ClCompile Include="source\primitive\PrimitiveBase.cpp" />
     <ClCompile Include="source\primitive\PrimitivePlane.cpp" />
     <ClCompile Include="source\Resource\ResourceServer.cpp" />
+    <ClCompile Include="source\UIElement.cpp" />
+    <ClCompile Include="source\UIPanel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\ActionMap.h" />
+    <ClInclude Include="source\AnimManager.h" />
     <ClInclude Include="source\appframe.h" />
     <ClInclude Include="source\Application\ApplicationBase.h" />
     <ClInclude Include="source\Application\UtilMacro.h" />
+    <ClInclude Include="source\CameraBase.h" />
     <ClInclude Include="source\CFile\CFile.h" />
+    <ClInclude Include="source\ColliderComponent.h" />
+    <ClInclude Include="source\Component.h" />
     <ClInclude Include="source\draw\mydraw.h" />
     <ClInclude Include="source\DxUtil\DxUtility.h" />
+    <ClInclude Include="source\GameComposite.h" />
+    <ClInclude Include="source\GameLeaf.h" />
+    <ClInclude Include="source\GameObject.h" />
+    <ClInclude Include="source\GameObjectFactory.h" />
     <ClInclude Include="source\input\InputManager.h" />
     <ClInclude Include="source\math\mymath.h" />
     <ClInclude Include="source\math\Vector2.h" />
@@ -188,6 +203,8 @@
     <ClInclude Include="source\primitive\PrimitiveBase.h" />
     <ClInclude Include="source\primitive\PrimitivePlane.h" />
     <ClInclude Include="source\Resource\ResourceServer.h" />
+    <ClInclude Include="source\UIElement.h" />
+    <ClInclude Include="source\UIPanel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

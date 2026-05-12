@@ -5,7 +5,7 @@
 class CollisionManager
 {
 public:
-	// シングルトンインスタンの取得
+	// シングルトンインスタンスの取得
 	static CollisionManager& GetInstance()
 	{
 		static CollisionManager instance;

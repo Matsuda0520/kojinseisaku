@@ -1,5 +1,4 @@
 #pragma once
-#include "appframe.h"
 
 // すべてのカメラの親となる抽象クラス
 class CameraBase
